@@ -1,8 +1,11 @@
+var stepNum = 0;
+
 function createIngredientForm() {
   var section = document.querySelector("section");
   var form = document.createElement("form");
   form.setAttribute("method", "post");
   form.setAttribute("action", "/submit");
+  form.classList.add("ingredientForm");
 
   var sizeLabel = document.createElement("label");
   sizeLabel.textContent = "Amount: ";
@@ -28,23 +31,64 @@ function createIngredientForm() {
   ingredientInput.setAttribute("name", "ingredient");
   form.appendChild(ingredientInput);
 
-  section.appendChild(form);
+  var lastForm = document.querySelector(".ingredientForm:last-of-type");
+  if (lastForm) {
+    lastForm.insertAdjacentElement("afterend", form);
+  } else {
+    section.appendChild(form);
+  }
 
   return sizeInput;
 }
 
-document.addEventListener("keydown", function(event) {
-    if (event.key == 'Enter') {
-        event.preventDefault();
+function createInstructionsForm() {
+  var section = document.querySelector("section");
+  var form = document.createElement("form");
+  form.setAttribute("method", "post");
+  form.setAttribute("action", "/submit");
+  form.setAttribute("data-type", "instructions");
+  form.classList.add("instructionForm");
 
-        var input = document.activeElement;
-        if (input && input.tagName === 'INPUT') {
-            var newInput = createIngredientForm();
-            newInput.focus();
+  stepNum++;
+  var stepLabel = document.createElement("label");
+  stepLabel.textContent = "Step " + stepNum + ": ";
+  form.appendChild(stepLabel);
+  var stepInput = document.createElement("input");
+  stepInput.setAttribute("type", "text");
+  stepInput.setAttribute("name", "step");
+  form.appendChild(stepInput);
+
+  var lastForm = document.querySelector(".instructionForm:last-of-type");
+  if (lastForm) {
+    lastForm.insertAdjacentElement("afterend", form);
+  } else {
+    section.appendChild(form);
+  }
+
+  return stepInput;
+}
+
+document.addEventListener("keydown", function (event) {
+  if (event.key == "Enter") {
+    event.preventDefault();
+
+    var input = document.activeElement;
+    if (input && input.tagName === "INPUT") {
+      var parentForm = input.closest("form");
+      if (parentForm) {
+        if (parentForm.querySelector("[name='size']")) {
+          var newInput = createIngredientForm();
+          newInput.focus();
+        } else if (parentForm.querySelector("[name='step']")) {
+          var newInput = createInstructionsForm();
+          newInput.focus();
         }
+      }
     }
-})
+  }
+});
 
 document.addEventListener("DOMContentLoaded", function () {
-    createIngredientForm();
+  createIngredientForm();
+  createInstructionsForm();
 });

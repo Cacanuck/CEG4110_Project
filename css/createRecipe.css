@@ -1,0 +1,13 @@
+form{
+    padding-bottom: 5px;
+}
+.instructionForm{
+margin-top: 100px;
+}
+label {
+  padding-right: 5px;
+  padding-left: 50px;
+}
+input {
+    padding-right: 10px;
+}
