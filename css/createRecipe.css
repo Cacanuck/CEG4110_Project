@@ -1,13 +1,46 @@
-form{
-    padding-bottom: 5px;
-}
-.instructionForm{
-margin-top: 100px;
+form {
+  padding-bottom: 5px;
+  text-align: center;
 }
 label {
   padding-right: 5px;
   padding-left: 50px;
 }
 input {
-    padding-right: 10px;
+  height: 25px;
+}
+.Amount {
+  width: 30px;
+}
+.Measure {
+  width: 60px;
+}
+.Ingredient {
+  width: 300px;
+}
+.Step {
+  width: 80%;
+}
+div {
+  padding-top: 50px;
+}
+nav {
+  text-align: center;
+  padding-bottom: 50px;
+}
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+nav ul li a {
+  text-decoration: none;
+}
+.navImage {
+  width: 50px;
+  height: 50px;
 }
