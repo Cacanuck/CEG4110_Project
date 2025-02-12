@@ -92,10 +92,11 @@ document.addEventListener("keydown", function (event) {
   }
 });
 
-function createNavLink(href, imgSrc = null) {
+function createNavLink(href, imgSrc = null, navTitle) {
   var listItem = document.createElement("li");
   var link = document.createElement("a");
   link.href = href;
+  link.title = navTitle;
   if (imgSrc) {
     var image = document.createElement("img");
     image.src = "./images/" + imgSrc;
@@ -109,11 +110,13 @@ function createNavLink(href, imgSrc = null) {
 function populateNavLinks() {
   var nav = document.querySelector("nav");
   var ul = document.createElement("ul");
-  ul.appendChild(createNavLink("index.html", "GrumpyLogo.svg"));
-  ul.appendChild(createNavLink("#"));
-  ul.appendChild(createNavLink("recipeDisplay.html"));
-  ul.appendChild(createNavLink("#"));
-  ul.appendChild(createNavLink("#", "ProfileLogo.svg"));
+  ul.appendChild(createNavLink("index.html", "GrumpyLogo.svg", "Home"));
+  ul.appendChild(createNavLink("#", "InventoryLogo.svg", "Inventory"));
+  ul.appendChild(
+    createNavLink("recipeDisplay.html", "RecipeLogo.svg", "Recipes")
+  );
+  ul.appendChild(createNavLink("#", "CartLogo.svg", "SHopping Cart"));
+  ul.appendChild(createNavLink("#", "ProfileLogo.svg", "Profile"));
   nav.appendChild(ul);
 }
 
