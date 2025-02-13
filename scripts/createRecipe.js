@@ -1,5 +1,24 @@
 var stepNum = 0;
 
+function createDishForm() {
+  var header = document.querySelector("header");
+  var form = document.createElement("form");
+  form.setAttribute("method", "post");
+  form.setAttribute("action", "/submit");
+  form.setAttribute("data-type", "dish");
+  form.classList.add("dishForm");
+
+  var dishLabel = document.createElement("label");
+  dishLabel.textContent = "Dish Name: ";
+  form.appendChild(dishLabel);
+  var dishInput = document.createElement("input");
+  dishInput.setAttribute("type", "text");
+  dishInput.setAttribute("name", "dish");
+  dishInput.classList.add("Dish", "input");
+  form.appendChild(dishInput);
+  header.appendChild(form);
+}
+
 function createIngredientForm() {
   var section = document.querySelector("section");
   var form = document.createElement("form");
@@ -115,13 +134,29 @@ function populateNavLinks() {
   ul.appendChild(
     createNavLink("recipeDisplay.html", "RecipeLogo.svg", "Recipes")
   );
-  ul.appendChild(createNavLink("#", "CartLogo.svg", "SHopping Cart"));
+  ul.appendChild(createNavLink("#", "CartLogo.svg", "Shopping Cart"));
   ul.appendChild(createNavLink("#", "ProfileLogo.svg", "Profile"));
   nav.appendChild(ul);
 }
 
+function createHeading(text) {
+  var heading = document.createElement("h1");
+  heading.textContent = text;
+  return heading;
+}
+
+function populateHeading(headingText, locationTag) {
+  var heading = createHeading(headingText);
+  var location = document.querySelector(locationTag);
+  location.appendChild(heading);
+}
+
 document.addEventListener("DOMContentLoaded", function () {
+  populateHeading("Name of Dish", "header");
+  createDishForm();
+  populateHeading("Ingredients", "section");
   createIngredientForm();
+  populateHeading("Instructions", "div");
   createInstructionsForm();
   populateNavLinks();
 });
