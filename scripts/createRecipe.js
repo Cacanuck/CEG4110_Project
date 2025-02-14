@@ -88,7 +88,54 @@ function createInstructionsForm() {
     div.appendChild(form);
   }
 
+  if (!document.querySelector("#submitButton")) {
+    var submitButton = document.createElement("button");
+    submitButton.setAttribute("id", "submitButton");
+    submitButton.textContent = "Create Recipe";
+    submitButton.addEventListener("click", submitForm);
+    div.appendChild(submitButton);
+  }
+
   return stepInput;
+}
+
+function submitForm(event) {
+  event.preventDefault();
+
+  var recipeData = {
+    dish: "",
+    ingredients: [],
+    instructions: [],
+  };
+
+  var dishInput = document.querySelectorAll(".dishForm input[name='dish']");
+  recipeData.dish = dishInput.values;
+
+  document.querySelectorAll(".ingredientForm").forEach((form) => {
+    var size = form.querySelector("input[names='size']").value;
+    var measure = form.querySelector("input[name='measure']").value;
+    var ingredient = form.querySelector("input[name='ingredient']").value;
+    recipeData.ingredients.push({ size, measure, ingredient });
+  });
+
+  document.querySelectorAll(".instructionForm").forEach((form) => {
+    var step = form.querySelector("input[name='step']").value;
+    recipeData.instructions.push(step);
+  });
+
+  // fetch("/submit", {
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //   },
+  //   body: JSON.stringify(recipeData),
+  // })
+  //   .then((response) => response.json())
+  //   .then((data) => {
+  //     alert("Recipe submitted.");
+  //     console.log(data);
+  //   })
+  //   .catch((error) => console.error("Error submitting recipe:", error));
 }
 
 document.addEventListener("keydown", function (event) {

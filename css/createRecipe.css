@@ -1,12 +1,15 @@
 form {
+  display: flex;
   padding-bottom: 5px;
   text-align: center;
+  align-items: center;
 }
 label {
   padding-right: 5px;
   padding-left: 50px;
 }
 input {
+  flex: 1;
   height: 25px;
 }
 .Amount {
@@ -21,12 +24,21 @@ input {
 .Step {
   width: 80%;
 }
-div {
+div, section, header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   padding-top: 50px;
+}
+h1{
+  font-size: 2em;
+}
+#submitButton {
+  margin-top: 20px;
 }
 nav {
   text-align: center;
-  padding-bottom: 50px;
 }
 nav ul {
   list-style-type: none;
