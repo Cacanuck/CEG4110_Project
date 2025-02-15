@@ -22,3 +22,6 @@ h1 {
   text-align: center;
   justify-content: center;
 }
+.recipe.selected {
+  background-color: orange;
+}

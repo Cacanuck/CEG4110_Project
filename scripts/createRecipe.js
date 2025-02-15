@@ -92,7 +92,10 @@ function createInstructionsForm() {
     var submitButton = document.createElement("button");
     submitButton.setAttribute("id", "submitButton");
     submitButton.textContent = "Create Recipe";
-    submitButton.addEventListener("click", submitForm);
+    submitButton.addEventListener("click", function(event) {
+      submitForm(event);
+      window.location.href = "recipeDisplay.html";
+    });
     div.appendChild(submitButton);
   }
 
@@ -108,11 +111,11 @@ function submitForm(event) {
     instructions: [],
   };
 
-  var dishInput = document.querySelectorAll(".dishForm input[name='dish']");
-  recipeData.dish = dishInput.values;
+  var dishInput = document.querySelector(".dishForm input[name='dish']");
+  recipeData.dish = dishInput.value;
 
   document.querySelectorAll(".ingredientForm").forEach((form) => {
-    var size = form.querySelector("input[names='size']").value;
+    var size = form.querySelector("input[name='size']").value;
     var measure = form.querySelector("input[name='measure']").value;
     var ingredient = form.querySelector("input[name='ingredient']").value;
     recipeData.ingredients.push({ size, measure, ingredient });
