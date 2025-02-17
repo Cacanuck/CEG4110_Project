@@ -1,0 +1,317 @@
+/* Reset Default Browser Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Base Body Styles */
+body {
+    font-family: 'DM Sans', Arial, sans-serif;
+    line-height: 1.6;
+    background-color: white;
+}
+
+/* Navigation Bar Styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #8499B1;
+    color: white;
+    font-family: 'Playfair Display', 'serif';
+}
+
+/* Logo & Profile Icon Styles */
+.logo {
+    width: 40px;
+    height: 40px;
+    display: block;
+}
+
+.profile-icon {
+    width: 35px;
+    height: 35px;
+    display: block;
+}
+
+/* Logo Section Styles */
+.nav-brand-link {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    text-decoration: none;
+    color: white;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    font-family: 'Playfair Display', serif;
+}
+
+/* Nav Link Styles */
+.nav-links {
+    display: flex;
+    gap: 6rem;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+}
+
+/* Active Tab */
+.nav-links a.active {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+/* Profile Section Styles */
+.nav-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+}
+
+/* Main Content */
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* Create Cart Button */
+.create-cart-btn {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    background-color: #F3DFA2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin-top: 2rem;
+    font-family: 'DM Sans', Arial, sans-serif;
+}
+
+.create-cart-btn:hover {
+    background-color: #F3DFA2;
+}
+
+/* Shopping Cart Card */
+.cart-card {
+    background-color: white;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    font-family: 'DM Sans', Arial, sans-serif;
+}
+
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+/* Cart Action Buttons */
+.cart-actions button {
+    padding: 0.5rem 1rem;
+    margin-left: 0.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.edit-btn {
+    background-color: #D3FAC7;
+    color: white;
+}
+
+.delete-btn {
+    background-color: #EC9192;
+    color: white;
+}
+
+/* Modal Overlay */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: white;
+    margin: 10% auto;
+    padding: 2rem;
+    width: 90%;
+    max-width: 800px; /* Increased */
+    border-radius: 4px;
+    font-family: 'DM Sans', Arial, sans-serif;
+}
+
+/* Modal Close Button */
+.close {
+    float: right;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Form Group Styles */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: 'DM Sans', Arial, sans-serif;
+}
+
+/* Item Entry Grid */
+.item-entry {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.5fr auto; /* Column Distribution */
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* Selection Dropdown Styles */
+.item-entry select {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: 'DM Sans', Arial, sans-serif;
+}
+
+/* Form Action Buttons */
+#add-item-btn, .submit-cart {
+    padding: 0.5rem 1rem;
+    margin-top: 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#add-item-btn {
+    background-color: #8499B1;
+    color: white;
+}
+
+.submit-cart {
+    background-color: #D3FAC7;
+    color: white;
+    width: 100%;
+}
+
+/* Empty State Styles */
+.no-carts {
+    text-align: center;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 4px;
+    margin: 2rem 0;
+}
+
+/* Cart Item Display Styles */
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+}
+
+.cart-items {
+    margin-top: 1rem;
+}
+
+/* Global Button Font */
+button {
+    font-family: 'DM Sans', Arial, sans-serif;
+}
+
+/* Form Input Font */
+.item-entry input {
+    font-family: 'DM Sans', Arial, sans-serif;
+}
+
+/* Cart Title Container Styles */
+.cart-title-container {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+/* Cart Icon Styles */
+.cart-icon {
+    width: 24px;
+    height: 24px;
+    display: block;
+}
+
+.cart-title-container h2 {
+    margin: 0;
+    font-family: 'DM Sans', Arial, sans-serif;
+}
+
+/* Cart Metadata Styles */
+.cart-meta {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Item Information Styles */
+.item-info {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+/* Item Category Styles */
+.item-category {
+    font-size: 0.9rem;
+    color: #666;
+    background-color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+}
+
+.profile-link {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    text-decoration: none;
+    color: white;
+}
+
+.profile-link:hover {
+    opacity: 0.8;
+}
