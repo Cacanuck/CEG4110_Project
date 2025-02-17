@@ -64,6 +64,20 @@ body {
   font-family: "Playfair Display", serif;
   font-size: 1.2rem;
 }
+.profile-link {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  text-decoration: none;
+  color: white;
+}
+.profile-link:hover {
+  opacity: 0.8;
+}
+.nav-links a:hover,
+.nav-brand-link:hover {
+  opacity: 0.8;
+}
 form {
   display: flex;
   padding-bottom: 5px;
