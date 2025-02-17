@@ -107,6 +107,7 @@ body {
 
 .create-cart-btn:hover {
     background-color: #F3DFA2;
+    opacity: 0.8;
 }
 
 /* Shopping Cart Card */
@@ -313,5 +314,9 @@ button {
 }
 
 .profile-link:hover {
+    opacity: 0.8;
+}
+
+.nav-links a:hover, .nav-brand-link:hover {
     opacity: 0.8;
 }
