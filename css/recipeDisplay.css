@@ -23,5 +23,8 @@ h1 {
   justify-content: center;
 }
 .recipe.selected {
-  background-color: orange;
+  background-color: #8499b1;
+}
+#recipeList {
+  margin-bottom: 40px;
 }

@@ -43,7 +43,10 @@ function editRecipeButton() {
   button.addEventListener("click", function () {
     var selected = document.querySelector(".recipe.selected");
     if (selected) {
-      alert("PLACEHOLDER: NEED STORAGE DATA");
+      var recipes = JSON.parse(localStorage.getItem("recipes")) || [];
+      var recipeEdit = recipes.find((r) => r.dish === selected.textContent);
+      localStorage.setItem("editRecipe", JSON.stringify(recipeEdit));
+      window.location.href = "createRecipe.html";
     } else {
       alert("Select a Recipe");
     }
@@ -74,21 +77,33 @@ function selectRecipe(event) {
 }
 
 function loadRecipe() {
-  var recipes = ["placeholder", "placeholder"];
-  recipes.forEach((recipeName) => {
-    addRecipe(recipeName);
+  var recipes = JSON.parse(localStorage.getItem("recipes")) || [];
+  if (recipes.length === 0) {
+    console.log("No Recipes");
+    return;
+  }
+  recipes.forEach((recipe) => {
+    addRecipe(recipe);
   });
 }
 
 function addRecipe(name) {
   var recipe = document.createElement("div");
-  recipe.textContent = name;
+  recipe.textContent = name.dish || "Unamed Recipe";
   recipe.classList.add("recipe");
   recipe.addEventListener("click", selectRecipe);
   document.getElementById("recipeList").appendChild(recipe);
 }
 
+function createDiv() {
+  var div = document.createElement("div");
+  div.id = "recipeList";
+  var nav = document.querySelector("nav");
+  nav.insertAdjacentElement("afterend", div);
+}
+
 document.addEventListener("DOMContentLoaded", function () {
+  createDiv();
   populateNavLinks();
   createRecipeButton();
   editRecipeButton();

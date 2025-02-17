@@ -1,6 +1,7 @@
 var stepNum = 0;
+var editRecipe = JSON.parse(localStorage.getItem("editRecipe"));
 
-function createDishForm() {
+function createDishForm(edit = null) {
   var header = document.querySelector("header");
   var form = document.createElement("form");
   form.setAttribute("method", "post");
@@ -15,11 +16,14 @@ function createDishForm() {
   dishInput.setAttribute("type", "text");
   dishInput.setAttribute("name", "dish");
   dishInput.classList.add("Dish", "input");
+  if (edit) {
+    dishInput.value = edit.dish;
+  }
   form.appendChild(dishInput);
   header.appendChild(form);
 }
 
-function createIngredientForm() {
+function createIngredientForm(edit = null) {
   var section = document.querySelector("section");
   var form = document.createElement("form");
   form.setAttribute("method", "post");
@@ -53,6 +57,15 @@ function createIngredientForm() {
   ingredientInput.classList.add("Ingredient", "input");
   form.appendChild(ingredientInput);
 
+  if (edit) {
+    var index = document.querySelectorAll(".ingredientForm").length;
+    if (edit.ingredients[index]) {
+      sizeInput.value = edit.ingredients[index].size;
+      measureInput.value = edit.ingredients[index].measure;
+      ingredientInput.value = edit.ingredients[index].ingredient;
+    }
+  }
+
   var lastForm = document.querySelector(".ingredientForm:last-of-type");
   if (lastForm) {
     lastForm.insertAdjacentElement("afterend", form);
@@ -63,7 +76,7 @@ function createIngredientForm() {
   return sizeInput;
 }
 
-function createInstructionsForm() {
+function createInstructionsForm(edit = null) {
   var div = document.querySelector("div");
   var form = document.createElement("form");
   form.setAttribute("method", "post");
@@ -88,11 +101,18 @@ function createInstructionsForm() {
     div.appendChild(form);
   }
 
+  if (edit) {
+    var index = document.querySelectorAll(".instructionForm").length;
+    if (edit.instructions[index]) {
+      stepInput.value = edit.instructions[index];
+    }
+  }
+
   if (!document.querySelector("#submitButton")) {
     var submitButton = document.createElement("button");
     submitButton.setAttribute("id", "submitButton");
     submitButton.textContent = "Create Recipe";
-    submitButton.addEventListener("click", function(event) {
+    submitButton.addEventListener("click", function (event) {
       submitForm(event);
       window.location.href = "recipeDisplay.html";
     });
@@ -126,19 +146,20 @@ function submitForm(event) {
     recipeData.instructions.push(step);
   });
 
-  // fetch("/submit", {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  //   body: JSON.stringify(recipeData),
-  // })
-  //   .then((response) => response.json())
-  //   .then((data) => {
-  //     alert("Recipe submitted.");
-  //     console.log(data);
-  //   })
-  //   .catch((error) => console.error("Error submitting recipe:", error));
+  var recipes = JSON.parse(localStorage.getItem("recipes")) || [];
+  var editRecipe = JSON.parse(localStorage.getItem("editRecipe"));
+  if (editRecipe) {
+    var index = recipes.findIndex((recipe) => recipe.dish === editRecipe.dish);
+    if (index !== -1) {
+      recipes[index] = recipeData;
+    }
+    localStorage.removeItem("editRecipe");
+  } else {
+    recipes.push(recipeData);
+  }
+  localStorage.setItem("recipes", JSON.stringify(recipes));
+
+  window.location.href = "recipeDisplay.html";
 }
 
 document.addEventListener("keydown", function (event) {
@@ -203,10 +224,19 @@ function populateHeading(headingText, locationTag) {
 
 document.addEventListener("DOMContentLoaded", function () {
   populateHeading("Name of Dish", "header");
-  createDishForm();
+  createDishForm(editRecipe);
   populateHeading("Ingredients", "section");
-  createIngredientForm();
+  if (editRecipe && editRecipe.ingredients.length > 0) {
+    editRecipe.ingredients.forEach(() => createIngredientForm(editRecipe));
+  } else {
+    createIngredientForm();
+  }
   populateHeading("Instructions", "div");
-  createInstructionsForm();
+  if (editRecipe && editRecipe.instructions.length > 0) {
+    editRecipe.instructions.forEach(() => createInstructionsForm(editRecipe));
+  } else {
+    createInstructionsForm();
+  }
   populateNavLinks();
+  localStorage.removeItem("editRecipe");
 });
