@@ -2,7 +2,7 @@ var stepNum = 0;
 var editRecipe = JSON.parse(localStorage.getItem("editRecipe"));
 
 function createDishForm(edit = null) {
-  var header = document.querySelector("header");
+  var main = document.querySelector("main");
   var form = document.createElement("form");
   form.setAttribute("method", "post");
   form.setAttribute("action", "/submit");
@@ -20,7 +20,7 @@ function createDishForm(edit = null) {
     dishInput.value = edit.dish;
   }
   form.appendChild(dishInput);
-  header.appendChild(form);
+  main.appendChild(form);
 }
 
 function createIngredientForm(edit = null) {
@@ -254,7 +254,7 @@ function populateHeading(headingText, locationTag) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  populateHeading("Name of Dish", "header");
+  populateHeading("Name of Dish", "main");
   createDishForm(editRecipe);
   populateHeading("Ingredients", "section");
   if (editRecipe && editRecipe.ingredients.length > 0) {

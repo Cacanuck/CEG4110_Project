@@ -104,9 +104,8 @@ input {
 .Step {
   width: 80%;
 }
-div,
 section,
-header {
+main {
   display: flex;
   flex-direction: column;
   justify-content: center;
