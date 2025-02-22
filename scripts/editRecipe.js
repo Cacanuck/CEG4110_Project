@@ -117,7 +117,7 @@ function createInstructionsForm(edit = null) {
   if (!document.querySelector("#submitButton")) {
     var submitButton = document.createElement("button");
     submitButton.setAttribute("id", "submitButton");
-    submitButton.textContent = "Create Recipe";
+    submitButton.textContent = "Save Changes";
     submitButton.addEventListener("click", function (event) {
       submitForm(event);
       window.location.href = "recipeDisplay.html";
@@ -132,6 +132,7 @@ function submitForm(event) {
   event.preventDefault();
 
   var recipeData = {
+    id: editRecipe?.id || Date.now(),
     dish: "",
     ingredients: [],
     instructions: [],
@@ -153,19 +154,19 @@ function submitForm(event) {
   });
 
   var recipes = JSON.parse(localStorage.getItem("recipes")) || [];
-  var storedEditRecipe = localStorage.getItem("editRecipe");
-  if (storedEditRecipe) {
-    var editRecipe = JSON.parse(storedEditRecipe);
-    var index = recipes.findIndex((recipe) => recipe.dish === editRecipe.dish);
+  if (editRecipe) {
+    var index = recipes.findIndex((recipe) => recipe.id === editRecipe.id);
     if (index !== -1) {
       recipes[index] = recipeData;
+    } else {
+      recipes.push(recipeData);
     }
-    localStorage.removeItem("editRecipe");
   } else {
     recipes.push(recipeData);
   }
-  localStorage.setItem("recipes", JSON.stringify(recipes));
 
+  localStorage.setItem("recipes", JSON.stringify(recipes));
+  localStorage.removeItem("editRecipe");
   window.location.href = "recipeDisplay.html";
 }
 

@@ -1,0 +1,120 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: "DM Sans", Arial, sans-serif;
+  line-height: 1.6;
+  background-color: white;
+}
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #8499b1;
+  color: white;
+  font-family: "Playfair Display", "serif";
+}
+.logo {
+  width: 40px;
+  height: 40px;
+  display: block;
+}
+.profile-icon {
+  width: 35px;
+  height: 35px;
+  display: block;
+}
+.nav-brand-link {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  text-decoration: none;
+  color: white;
+}
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  font-family: "Playfair Display", serif;
+}
+.nav-links {
+  display: flex;
+  gap: 6rem;
+}
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  font-family: "Playfair Display", serif;
+  font-size: 1.2rem;
+}
+.nav-links a.active {
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+.nav-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-family: "Playfair Display", serif;
+  font-size: 1.2rem;
+}
+.profile-link {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  text-decoration: none;
+  color: white;
+}
+.profile-link:hover {
+  opacity: 0.8;
+}
+.nav-links a:hover,
+.nav-brand-link:hover {
+  opacity: 0.8;
+}
+form {
+  display: flex;
+  padding-bottom: 5px;
+  text-align: center;
+  align-items: center;
+}
+label {
+  padding-right: 5px;
+  padding-left: 50px;
+}
+input {
+  flex: 1;
+  height: 25px;
+}
+.Amount {
+  width: 30px;
+}
+.Measure {
+  width: 60px;
+}
+.Ingredient {
+  width: 300px;
+}
+.Step {
+  width: 80%;
+}
+section,
+main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 50px;
+}
+h1 {
+  font-size: 2em;
+}
+#submitButton {
+  margin-top: 20px;
+}

@@ -77,7 +77,7 @@ function editRecipeButton() {
       var recipes = JSON.parse(localStorage.getItem("recipes")) || [];
       var recipeEdit = recipes.find((r) => r.dish === selected.textContent);
       localStorage.setItem("editRecipe", JSON.stringify(recipeEdit));
-      window.location.href = "createRecipe.html";
+      window.location.href = "editRecipe.html";
     } else {
       alert("Select a Recipe");
     }
@@ -92,6 +92,10 @@ function deleteRecipeButton() {
   button.addEventListener("click", function () {
     var selected = document.querySelector(".recipe.selected");
     if (selected) {
+      var recipes = JSON.parse(localStorage.getItem("recipes")) || [];
+      var recipeName = selected.textContent.trim();
+      recipes = recipes.filter(recipe => recipe.dish.trim() !== recipeName);
+      localStorage.setItem("recipes", JSON.stringify(recipes));
       selected.remove();
     } else {
       alert("Select a Recipe");
