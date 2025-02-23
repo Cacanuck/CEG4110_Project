@@ -80,6 +80,7 @@ body {
 }
 form {
   display: flex;
+  flex-wrap: wrap;
   padding-bottom: 5px;
   text-align: center;
   align-items: center;
@@ -89,7 +90,6 @@ label {
   padding-left: 50px;
 }
 input {
-  flex: 1;
   height: 25px;
 }
 .Amount {
@@ -104,17 +104,37 @@ input {
 .Step {
   width: 80%;
 }
+.Dish {
+  width: 10%;
+}
 section,
-main {
+main,
+.instructionDiv {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
   padding-top: 50px;
+  width: 90%;
 }
 h1 {
   font-size: 2em;
+  margin-left: 50px;
+  margin-bottom: 20px;
 }
 #submitButton {
   margin-top: 20px;
+}
+button {
+  width: 150px;
+  padding: 1rem;
+  background-color: #f3dfa2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin-top: 2rem;
+  font-family: "DM Sans", Arial, sans-serif;
+  text-align: center;
+  justify-content: center;
+  margin-left: 50px;
 }

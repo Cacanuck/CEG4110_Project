@@ -133,13 +133,21 @@ function addRecipe(name) {
 function createDiv() {
   var div = document.createElement("div");
   div.id = "recipeList";
-  var nav = document.querySelector("nav");
-  nav.insertAdjacentElement("afterend", div);
+  var main = document.querySelector("main");
+  main.insertAdjacentElement("afterend", div);
+}
+
+function createHeading() {
+  var h1 = document.createElement("h1");
+  h1.textContent = "My Recipes";
+  var main = document.querySelector("main");
+  main.appendChild(h1);
 }
 
 document.addEventListener("DOMContentLoaded", function () {
   createDiv();
   createNav();
+  createHeading();
   createRecipeButton();
   editRecipeButton();
   deleteRecipeButton();

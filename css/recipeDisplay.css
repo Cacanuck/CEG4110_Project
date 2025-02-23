@@ -16,6 +16,7 @@ body {
   background-color: #8499b1;
   color: white;
   font-family: "Playfair Display", "serif";
+  margin-bottom: 20px;
 }
 .logo {
   width: 40px;
@@ -78,13 +79,44 @@ body {
 .nav-brand-link:hover {
   opacity: 0.8;
 }
-h1 {
-  text-align: center;
-  justify-content: center;
+.recipe {
+  display: flex;
+  width: min-content;
+  padding: 5px 10px;
+  flex: 0 0 calc(100% / 3 - 20px);
+  cursor: pointer;
 }
 .recipe.selected {
-  background-color: #8499b1;
+  background-color: #f5f0f6;
 }
 #recipeList {
-  margin-bottom: 40px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 0 auto;
+  width: 80%;
+}
+button {
+  display: inline;
+  text-align: center;
+  justify-content: center;
+  width: 150px;
+  padding: 1rem;
+  background-color: #f3dfa2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  font-family: "DM Sans", Arial, sans-serif;
+  margin: 2rem 0 10px 10px;
+}
+section {
+  display: flex;
+  justify-content: center;
+}
+main {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
 }

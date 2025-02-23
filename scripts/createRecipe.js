@@ -87,6 +87,7 @@ function createIngredientForm(edit = null) {
 
 function createInstructionsForm(edit = null) {
   var div = document.querySelector("div");
+  div.classList.add("instructionDiv");
   var form = document.createElement("form");
   form.setAttribute("method", "post");
   form.setAttribute("action", "/submit");
