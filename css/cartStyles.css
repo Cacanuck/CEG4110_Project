@@ -300,7 +300,7 @@ button {
 .item-category {
     font-size: 0.9rem;
     color: #666;
-    background-color: white;
+    background-color: #f0f0f0;
     padding: 0.2rem 0.5rem;
     border-radius: 4px;
 }
