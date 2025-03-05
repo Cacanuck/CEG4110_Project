@@ -2,7 +2,7 @@ function createNav() {
   var navLinks = [
     { text: "Home", href: "index.html" },
     { text: "Recipes", href: "recipeDisplay.html" },
-    { text: "Inventory", href: "inventory.html" },
+    { text: "Pantry", href: "pantry.html" },
     { text: "Carts", href: "shoppingCart.html" },
   ];
   var nav = document.querySelector("nav");
@@ -67,48 +67,32 @@ function createRecipeButton() {
   document.querySelector("section").appendChild(button);
 }
 
-function editRecipeButton() {
+function editRecipeButton(recipeName) {
   var button = document.createElement("button");
-  button.textContent = "Edit Recipe";
-  button.id = "editButton";
+  button.textContent = "Edit";
+  button.classList.add("editButton");
   button.addEventListener("click", function () {
-    var selected = document.querySelector(".recipe.selected");
-    if (selected) {
-      var recipes = JSON.parse(localStorage.getItem("recipes")) || [];
-      var recipeEdit = recipes.find((r) => r.dish === selected.textContent);
+    var recipes = JSON.parse(localStorage.getItem("recipes")) || [];
+    var recipeEdit = recipes.find((r) => r.dish === recipeName);
+    if (recipeEdit) {
       localStorage.setItem("editRecipe", JSON.stringify(recipeEdit));
       window.location.href = "editRecipe.html";
-    } else {
-      alert("Select a Recipe");
     }
   });
-  document.querySelector("section").appendChild(button);
+  return button;
 }
 
-function deleteRecipeButton() {
+function deleteRecipeButton(recipeName, recipeElement) {
   var button = document.createElement("button");
-  button.textContent = "Delete Recipe";
-  button.id = "deletebutton";
+  button.textContent = "Delete";
+  button.classList.add("deleteButton");
   button.addEventListener("click", function () {
-    var selected = document.querySelector(".recipe.selected");
-    if (selected) {
-      var recipes = JSON.parse(localStorage.getItem("recipes")) || [];
-      var recipeName = selected.textContent.trim();
-      recipes = recipes.filter(recipe => recipe.dish.trim() !== recipeName);
-      localStorage.setItem("recipes", JSON.stringify(recipes));
-      selected.remove();
-    } else {
-      alert("Select a Recipe");
-    }
+    var recipes = JSON.parse(localStorage.getItem("recipes")) || [];
+    recipes = recipes.filter((recipe) => recipe.dish !== recipeName);
+    localStorage.setItem("recipes", JSON.stringify(recipes));
+    recipeElement.remove();
   });
-  document.querySelector("section").appendChild(button);
-}
-
-function selectRecipe(event) {
-  document
-    .querySelectorAll(".recipe")
-    .forEach((el) => el.classList.remove("selected"));
-  event.target.classList.add("selected");
+  return button;
 }
 
 function loadRecipe() {
@@ -122,12 +106,34 @@ function loadRecipe() {
   });
 }
 
-function addRecipe(name) {
-  var recipe = document.createElement("div");
-  recipe.textContent = name.dish || "Unamed Recipe";
-  recipe.classList.add("recipe");
-  recipe.addEventListener("click", selectRecipe);
-  document.getElementById("recipeList").appendChild(recipe);
+function addRecipe(recipe) {
+  var recipeDiv = document.createElement("div");
+  recipeDiv.classList.add("recipe");
+  var recipeText = document.createElement("span");
+  recipeText.textContent = recipe.dish || "Unnamed Recipe";
+  recipeDiv.appendChild(recipeText);
+  if (recipe.ingredients && recipe.ingredients.length > 0) {
+    var ingredientList = document.createElement("ul");
+    ingredientList.classList.add("ingredientList");
+    recipe.ingredients.forEach((ingredient) => {
+      var li = document.createElement("li");
+      li.textContent = `${ingredient.size} ${ingredient.measure} ${ingredient.ingredient}`;
+      ingredientList.appendChild(li);
+    });
+    recipeDiv.appendChild(ingredientList);
+  }
+  var expansionContent = document.createElement("div");
+  expansionContent.textContent = recipe.instructions || "No Instructions Listed";
+  var expansionPanel = createExpansionPanel(expansionContent);
+  recipeDiv.appendChild(expansionPanel);
+  var buttonContainer = document.createElement("div");
+  buttonContainer.classList.add("button-container");
+  var editButton = editRecipeButton(recipe.dish);
+  var deleteButton = deleteRecipeButton(recipe.dish, recipeDiv);
+  buttonContainer.appendChild(editButton);
+  buttonContainer.appendChild(deleteButton);
+  recipeDiv.appendChild(buttonContainer);
+  document.getElementById("recipeList").appendChild(recipeDiv);
 }
 
 function createDiv() {
@@ -144,12 +150,36 @@ function createHeading() {
   main.appendChild(h1);
 }
 
+function createExpansionPanel(instructions) {
+  var expansionDiv = document.createElement("div");
+  expansionDiv.classList.add("expansionDiv");
+  var button = document.createElement("button");
+  button.classList.add("expansionButton", "collapsed");
+  var expansionContent = document.createElement("div");
+  expansionContent.classList.add("expansionContent");
+  expansionContent.appendChild(instructions);
+  button.addEventListener("click", function () {
+    expansionContent.classList.toggle("open");
+    if (expansionContent.classList.contains("open")) {
+      expansionContent.style.maxHeight = expansionContent.scrollHeight + "px";
+      button.classList.remove("collapsed");
+      button.classList.add("open");
+    } else {
+      expansionContent.style.maxHeight = null;
+      button.classList.add("collapsed");
+      button.classList.remove("open");
+    }
+  })
+  expansionDiv.appendChild(button);
+  expansionDiv.appendChild(expansionContent);
+
+  return expansionDiv;
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   createDiv();
   createNav();
   createHeading();
   createRecipeButton();
-  editRecipeButton();
-  deleteRecipeButton();
   loadRecipe();
 });

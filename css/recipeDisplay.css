@@ -81,22 +81,24 @@ body {
 }
 .recipe {
   display: flex;
-  width: min-content;
-  padding: 5px 10px;
-  flex: 0 0 calc(100% / 3 - 20px);
-  cursor: pointer;
-}
-.recipe.selected {
-  background-color: #f5f0f6;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
 }
 #recipeList {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   margin: 0 auto;
   width: 80%;
 }
-button {
+.button-container {
+  display: flex;
+  gap: 10px;
+}
+#createButton {
   display: inline;
   text-align: center;
   justify-content: center;
@@ -111,6 +113,18 @@ button {
   font-family: "DM Sans", Arial, sans-serif;
   margin: 2rem 0 10px 10px;
 }
+.editButton,
+.deleteButton {
+  background-color: #d3fac7;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+.deleteButton {
+  background-color: #ec9192;
+}
 section {
   display: flex;
   justify-content: center;
@@ -119,4 +133,27 @@ main {
   max-width: 1200px;
   margin: 2rem auto;
   padding: 0 1rem;
+}
+span {
+  font-weight: bold;
+}
+ul {
+  list-style-type: none;
+}
+.expansionButton {
+  height: 0;
+  width: 0;
+  border: 8px solid white;
+  cursor: pointer;
+}
+.collapsed {
+  border-top-color: #000;
+}
+.open {
+  border-bottom-color: #000;
+}
+.expansionContent {
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+  max-height: 0;
 }

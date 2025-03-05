@@ -80,7 +80,6 @@ body {
 }
 form {
   display: flex;
-  flex-wrap: wrap;
   padding-bottom: 5px;
   text-align: center;
   align-items: center;
@@ -108,14 +107,13 @@ input {
   width: 10%;
 }
 section,
-main,
-.instructionDiv {
+main{
   display: flex;
   flex-direction: column;
   padding-top: 50px;
   width: 90%;
 }
-h1 {
+h2 {
   font-size: 2em;
   margin-left: 50px;
   margin-bottom: 20px;

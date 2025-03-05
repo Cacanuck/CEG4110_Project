@@ -89,7 +89,6 @@ label {
   padding-left: 50px;
 }
 input {
-  flex: 1;
   height: 25px;
 }
 .Amount {
@@ -104,15 +103,17 @@ input {
 .Step {
   width: 80%;
 }
+.Dish {
+  width: 10%;
+}
 section,
 main {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
   padding-top: 50px;
+  width: 90%;
 }
-h1 {
+h2 {
   font-size: 2em;
 }
 #submitButton {

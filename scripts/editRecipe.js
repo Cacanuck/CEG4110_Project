@@ -194,7 +194,7 @@ function createNav() {
   var navLinks = [
     { text: "Home", href: "index.html" },
     { text: "Recipes", href: "recipeDisplay.html" },
-    { text: "Inventory", href: "inventory.html" },
+    { text: "Pantry", href: "pantry.html" },
     { text: "Carts", href: "shoppingCart.html" },
   ];
   var nav = document.querySelector("nav");
@@ -250,7 +250,7 @@ function createNav() {
 }
 
 function createHeading(text) {
-  var heading = document.createElement("h1");
+  var heading = document.createElement("h2");
   heading.textContent = text;
   return heading;
 }
