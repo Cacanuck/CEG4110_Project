@@ -110,6 +110,7 @@ function addRecipe(recipe) {
   var recipeDiv = document.createElement("div");
   recipeDiv.classList.add("recipe");
   var recipeText = document.createElement("span");
+  recipeText.classList.add("recipeSpan");
   recipeText.textContent = recipe.dish || "Unnamed Recipe";
   recipeDiv.appendChild(recipeText);
   if (recipe.ingredients && recipe.ingredients.length > 0) {
@@ -123,8 +124,13 @@ function addRecipe(recipe) {
     recipeDiv.appendChild(ingredientList);
   }
   var expansionContent = document.createElement("div");
-  expansionContent.textContent = recipe.instructions || "No Instructions Listed";
-  var expansionPanel = createExpansionPanel(expansionContent);
+  expansionContent.textContent =
+    recipe.instructions || "No Instructions Listed";
+  var expansionPanel = createExpansionPanel(
+    Array.isArray(recipe.instructions)
+      ? recipe.instructions
+      : [recipe.instructions]
+  );
   recipeDiv.appendChild(expansionPanel);
   var buttonContainer = document.createElement("div");
   buttonContainer.classList.add("button-container");
@@ -155,9 +161,26 @@ function createExpansionPanel(instructions) {
   expansionDiv.classList.add("expansionDiv");
   var button = document.createElement("button");
   button.classList.add("expansionButton", "collapsed");
+  var span = document.createElement("span");
+  span.classList.add("buttonSpan");
+  span.textContent = "Click for Recipe";
+  expansionDiv.appendChild(span);
   var expansionContent = document.createElement("div");
   expansionContent.classList.add("expansionContent");
-  expansionContent.appendChild(instructions);
+  var stepNum = 1;
+  if (Array.isArray(instructions)) {
+    instructions.forEach((step) => {
+      var stepParagraph = document.createElement("p");
+      stepParagraph.textContent = stepNum + ") " + step;
+      stepNum++;
+      expansionContent.appendChild(stepParagraph);
+    });
+  } else {
+    var noInstructions = document.createElement("p");
+    noInstructions.textContent = "No Instructions Listed";
+    expansionContent.appendChild(noInstructions);
+  }
+  // expansionContent.appendChild(instructions);
   button.addEventListener("click", function () {
     expansionContent.classList.toggle("open");
     if (expansionContent.classList.contains("open")) {
@@ -169,7 +192,19 @@ function createExpansionPanel(instructions) {
       button.classList.add("collapsed");
       button.classList.remove("open");
     }
-  })
+  });
+  span.addEventListener("click", function () {
+    expansionContent.classList.toggle("open");
+    if (expansionContent.classList.contains("open")) {
+      expansionContent.style.maxHeight = expansionContent.scrollHeight + "px";
+      button.classList.remove("collapsed");
+      button.classList.add("open");
+    } else {
+      expansionContent.style.maxHeight = null;
+      button.classList.add("collapsed");
+      button.classList.remove("open");
+    }
+  });
   expansionDiv.appendChild(button);
   expansionDiv.appendChild(expansionContent);
 
