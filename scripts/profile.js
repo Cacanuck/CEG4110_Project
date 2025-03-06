@@ -11,7 +11,7 @@ function getUserCarts() {
 
 // Get User Recipes From Local Storage
 function getUserRecipes() {
-  const allRecipes = JSON.parse(localStorage.getItem('li')) || [];
+  const allRecipes = JSON.parse(localStorage.getItem('recipes')) || [];
   return allRecipes;
 }
 
