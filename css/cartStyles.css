@@ -95,7 +95,7 @@ body {
     display: block;
     width: 100%;
     padding: 1rem;
-    background-color: #F3DFA2;
+    background-color: #F4C846;
     color: white;
     border: none;
     border-radius: 4px;
@@ -106,7 +106,7 @@ body {
 }
 
 .create-cart-btn:hover {
-    background-color: #F3DFA2;
+    background-color: #F4C846;
     opacity: 0.8;
 }
 
@@ -137,12 +137,12 @@ body {
 }
 
 .edit-btn {
-    background-color: #D3FAC7;
+    background-color: #65AC4F;
     color: white;
 }
 
 .delete-btn {
-    background-color: #EC9192;
+    background-color: #D15E60;
     color: white;
 }
 
@@ -224,7 +224,7 @@ body {
 }
 
 .submit-cart {
-    background-color: #D3FAC7;
+    background-color: #65AC4F;
     color: white;
     width: 100%;
 }
