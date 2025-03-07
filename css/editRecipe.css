@@ -106,15 +106,19 @@ input {
 .Dish {
   width: 10%;
 }
-section,
 main {
-  display: flex;
-  flex-direction: column;
   padding-top: 50px;
   width: 90%;
 }
 h2 {
   font-size: 2em;
+}
+main h2 {
+  justify-content: center;
+  text-align: center;
+}
+main form {
+  justify-content: center;
 }
 #submitButton {
   margin-top: 20px;

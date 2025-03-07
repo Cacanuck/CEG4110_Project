@@ -82,12 +82,25 @@ function createIngredientForm(edit = null) {
     section.appendChild(form);
   }
 
+  var ingredientButton = document.querySelector("#ingredientButton");
+  if (!ingredientButton) {
+    ingredientButton = document.createElement("button");
+    ingredientButton.setAttribute("id", "ingredientButton");
+    ingredientButton.textContent = "Add Ingredient";
+    ingredientButton.addEventListener("click", function (event) {
+      event.preventDefault();
+      var newInput = createIngredientForm();
+      newInput.focus();
+    });
+  }
+
+  form.append(ingredientButton);
+
   return sizeInput;
 }
 
 function createInstructionsForm(edit = null) {
-  var div = document.querySelector("div");
-  div.classList.add("instructionDiv");
+  var div = document.querySelector(".instructionDiv");
   var form = document.createElement("form");
   form.setAttribute("method", "post");
   form.setAttribute("action", "/submit");
@@ -110,6 +123,20 @@ function createInstructionsForm(edit = null) {
   } else {
     div.appendChild(form);
   }
+
+  var instructionButton = document.querySelector("#instructionButton");
+  if (!instructionButton) {
+    instructionButton = document.createElement("button");
+    instructionButton.setAttribute("id", "instructionButton");
+    instructionButton.textContent = " Add Step";
+    instructionButton.addEventListener("click", function (event) {
+      event.preventDefault();
+      var newInput = createInstructionsForm();
+      newInput.focus();
+    });
+  }
+
+  form.append(instructionButton);
 
   if (edit && edit.instructions.length >= stepNum) {
     stepInput.value = edit.instructions[stepNum - 1];

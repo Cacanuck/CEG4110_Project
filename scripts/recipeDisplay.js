@@ -180,15 +180,16 @@ function createExpansionPanel(instructions) {
     noInstructions.textContent = "No Instructions Listed";
     expansionContent.appendChild(noInstructions);
   }
-  // expansionContent.appendChild(instructions);
   button.addEventListener("click", function () {
     expansionContent.classList.toggle("open");
     if (expansionContent.classList.contains("open")) {
       expansionContent.style.maxHeight = expansionContent.scrollHeight + "px";
+      span.textContent = "Click to Hide";
       button.classList.remove("collapsed");
       button.classList.add("open");
     } else {
       expansionContent.style.maxHeight = null;
+      span.textContent = "Click for Recipe";
       button.classList.add("collapsed");
       button.classList.remove("open");
     }
@@ -197,10 +198,12 @@ function createExpansionPanel(instructions) {
     expansionContent.classList.toggle("open");
     if (expansionContent.classList.contains("open")) {
       expansionContent.style.maxHeight = expansionContent.scrollHeight + "px";
+      span.textContent = "Click to Hide";
       button.classList.remove("collapsed");
       button.classList.add("open");
     } else {
       expansionContent.style.maxHeight = null;
+      span.textContent = "Click for Recipe";
       button.classList.add("collapsed");
       button.classList.remove("open");
     }

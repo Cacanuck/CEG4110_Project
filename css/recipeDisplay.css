@@ -81,7 +81,7 @@ body {
 }
 .recipe {
   display: grid;
-  grid-template-columns: 2fr 2fr 3fr .5fr;
+  grid-template-columns: 1fr 2.5fr 3fr .5fr;
   grid-template-rows: 1fr;
   grid-template-areas: 
     "span" "ul" "expansionDiv" "button-container";
@@ -110,7 +110,7 @@ body {
   justify-content: center;
   width: 150px;
   padding: 1rem;
-  background-color: #f3dfa2;
+  background-color: #f4c846;
   color: white;
   border: none;
   border-radius: 4px;
@@ -121,7 +121,7 @@ body {
 }
 .editButton,
 .deleteButton {
-  background-color: #d3fac7;
+  background-color: #65ac4f;
   border: none;
   color: white;
   padding: 5px 10px;
@@ -129,7 +129,7 @@ body {
   border-radius: 3px;
 }
 .deleteButton {
-  background-color: #ec9192;
+  background-color: #d15e60;
 }
 section {
   display: flex;
