@@ -86,7 +86,6 @@ form {
 label {
   padding-right: 5px;
   padding-left: 50px;
-  
 }
 input {
   height: 25px;
@@ -182,10 +181,36 @@ main form {
   justify-content: center;
   margin-left: 10px;
 }
+.deleteInstructionButton {
+  width: 80px;
+  height: 27px;
+  background-color: #d15e60;
+  color: white;
+  border: none;
+  border-radius: 1px;
+  cursor: pointer;
+  font-family: "DM Sans", Arial, sans-serif;
+  text-align: center;
+  justify-content: center;
+  margin-left: 10px;
+}
 #ingredientButton {
   width: 110px;
   height: 27px;
   background-color: #65ac4f;
+  color: white;
+  border: none;
+  border-radius: 1px;
+  cursor: pointer;
+  font-family: "DM Sans", Arial, sans-serif;
+  text-align: center;
+  justify-content: center;
+  margin-left: 10px;
+}
+.deleteIngredientButton {
+  width: 110px;
+  height: 27px;
+  background-color: #d15e60;
   color: white;
   border: none;
   border-radius: 1px;

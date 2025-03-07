@@ -94,9 +94,28 @@ function createIngredientForm(edit = null) {
     });
   }
 
-  form.append(ingredientButton);
+  var deleteIngredientButton = document.createElement("button");
+  deleteIngredientButton.classList.add("deleteIngredientButton");
+  deleteIngredientButton.textContent = "Delete Ingredient";
+  deleteIngredientButton.addEventListener("click", function (event) {
+    event.preventDefault();
+    form.remove();
+    updateIngredientDeleteButtons();
+  });
 
+  form.append(ingredientButton);
+  form.append(deleteIngredientButton);
+
+  updateIngredientDeleteButtons();
   return sizeInput;
+}
+
+function updateIngredientDeleteButtons() {
+  var deleteButtons = document.querySelectorAll(".deleteIngredientButton");
+  deleteButtons.forEach((btn, index) => {
+    btn.style.display =
+      index === deleteButtons.length - 1 ? "none" : "inline-block";
+  });
 }
 
 function createInstructionsForm(edit = null) {
@@ -110,6 +129,7 @@ function createInstructionsForm(edit = null) {
   stepNum++;
   var stepLabel = document.createElement("label");
   stepLabel.textContent = "Step " + stepNum + ": ";
+  stepLabel.classList.add("stepLabel");
   form.appendChild(stepLabel);
   var stepInput = document.createElement("input");
   stepInput.setAttribute("type", "text");
@@ -136,7 +156,19 @@ function createInstructionsForm(edit = null) {
     });
   }
 
+  var deleteInstructionButton = document.createElement("button");
+  deleteInstructionButton.classList.add("deleteInstructionButton");
+  deleteInstructionButton.textContent = "Delete Step";
+  deleteInstructionButton.addEventListener("click", function (event) {
+    event.preventDefault();
+    form.remove();
+    stepNum--;
+    updateStepNum();
+    updateInstructionDeleteButtons();
+  });
+
   form.append(instructionButton);
+  form.append(deleteInstructionButton);
 
   if (edit && edit.instructions.length >= stepNum) {
     stepInput.value = edit.instructions[stepNum - 1];
@@ -153,7 +185,23 @@ function createInstructionsForm(edit = null) {
     div.appendChild(submitButton);
   }
 
+  updateInstructionDeleteButtons();
   return stepInput;
+}
+
+function updateStepNum() {
+  var steps = document.querySelectorAll(".instructionForm");
+  steps.forEach((form, index) => {
+    form.querySelector(".stepLabel").textContent = "Step " + (index + 1) + ": ";
+  });
+}
+
+function updateInstructionDeleteButtons() {
+  var deleteButtons = document.querySelectorAll(".deleteInstructionButton");
+  deleteButtons.forEach((btn, index) => {
+    btn.style.display =
+      index === deleteButtons.length - 1 ? "none" : "inline-block";
+  });
 }
 
 function submitForm(event) {
