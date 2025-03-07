@@ -22,5 +22,12 @@ Second, run the Flask app in either your editor or in terminal via '''flask run'
 
 This will start the Flask app running locally at 127.0.0.1:5000 so then your javascript can point at that to work with it.  It will run until you kill it with ctl+c or in the task manager.
 
+#### For Mac
+
+1. `cd flaskTestTool`  to go into the test directory.
+2. `python3 -m venv venv`  to create the virtual environment.
+3. `source venv/bin/activate`  to activate the virtual environment.
+4. `python3 API_sim.py`  to run the backend.
+
 ### Adding Endpoints
 To make new endpoints for your pages just add a new '''apiSim.route("/yourpage/actionEndpoint", methods=["POST", "GET", "OPTIONS"])''' and then put the function that you want to execute below that.
