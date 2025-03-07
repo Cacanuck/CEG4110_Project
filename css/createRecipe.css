@@ -133,7 +133,20 @@ main form {
   width: 90%;
 }
 .instructionForm {
-  display: flex;
+  align-items: center;
+  gap: 5px;
+  display: grid;
+  grid-template-columns: auto 3fr auto auto auto; /* Column Distribution */
+  margin-bottom: 1rem;
+}
+.instructionForm input {
+  width: 100%;
+  margin: 0;
+}
+.instructionForm label {
+  margin: 0;
+  width: 125px;
+  text-align: left;
 }
 .ingredientForm {
   display: flex;
