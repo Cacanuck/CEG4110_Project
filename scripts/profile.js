@@ -115,5 +115,4 @@ logoutBtn.addEventListener('click', handleLogout);
 
 // Initialize Display
 displayUserCarts(); 
-console.log(getUserRecipes());
 displayUserRecipes();
