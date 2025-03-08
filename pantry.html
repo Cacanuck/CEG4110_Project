@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<script>initListPantry()</script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -75,17 +74,18 @@
     </main>
 
     <script>
-        async function initListPantry() {
+        function initListPantry() {
             //setting up js variables
             const outputArea = document.getElementById  ('outputPantry');
-            const selectedPantry = document.getElementById('dropDown').value;  //will need later to pick out specific pantries (i.e. dry goods, all, veg, fruit, canned)
+            //const selectedPantry = document.getElementById('dropDown').value;  //will need later to pick out specific pantries (i.e. dry goods, all, veg, fruit, canned)
             
             //TODO: get pantryList from API 
             // then vvv
             try {
-                const response = await fetch('http://127.0.0.1:5000/pantry/getItems');
+                const response = fetch('http://127.0.0.1:5000/pantry/getItems');
                 if (response.ok) {
-                    const data = await response.json(); 
+                    const data = response.json(); 
+                    pantryList = data.ingredient;
                     console.log(data);
                 } 
                 else {
