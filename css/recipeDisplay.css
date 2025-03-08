@@ -80,29 +80,37 @@ body {
   opacity: 0.8;
 }
 .recipe {
-  display: flex;
-  width: min-content;
-  padding: 5px 10px;
-  flex: 0 0 calc(100% / 3 - 20px);
-  cursor: pointer;
-}
-.recipe.selected {
-  background-color: #f5f0f6;
+  display: grid;
+  grid-template-columns: 1fr 2.5fr 3fr .5fr;
+  grid-template-rows: 1fr;
+  grid-template-areas: 
+    "span" "ul" "expansionDiv" "button-container";
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 5px;
+  border: none;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 #recipeList {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   margin: 0 auto;
   width: 80%;
 }
-button {
+.button-container {
+  display: flex;
+  gap: 10px;
+  justify-content: right;
+}
+#createButton {
   display: inline;
   text-align: center;
   justify-content: center;
   width: 150px;
   padding: 1rem;
-  background-color: #f3dfa2;
+  background-color: #f4c846;
   color: white;
   border: none;
   border-radius: 4px;
@@ -110,6 +118,18 @@ button {
   cursor: pointer;
   font-family: "DM Sans", Arial, sans-serif;
   margin: 2rem 0 10px 10px;
+}
+.editButton,
+.deleteButton {
+  background-color: #65ac4f;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+.deleteButton {
+  background-color: #d15e60;
 }
 section {
   display: flex;
@@ -119,4 +139,33 @@ main {
   max-width: 1200px;
   margin: 2rem auto;
   padding: 0 1rem;
+}
+.recipeSpan {
+  font-weight: bold;
+}
+ul {
+  list-style-type: none;
+}
+.expansionButton {
+  height: 0;
+  width: 0;
+  border: 8px solid white;
+  cursor: pointer;
+  position: absolute;
+}
+.collapsed {
+  border-top-color: #000;
+}
+.open {
+  border-bottom-color: #000;
+}
+.expansionContent {
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+  max-height: 0;
+}
+.buttonSpan {
+  cursor: pointer;
+  font-weight: 500;
+  padding-right: 5px;
 }

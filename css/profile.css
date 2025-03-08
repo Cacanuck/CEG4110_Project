@@ -78,3 +78,177 @@ body {
 .nav-brand-link:hover {
   opacity: 0.8;
 }
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Profile Page Layout */
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+/* Profile Information Styles */
+.profile-info h1 {
+  font-family: 'DM Sans', Arial, sans-serif;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.user-details {
+  color: #666;
+}
+
+.user-name {
+  font-family: 'DM Sans', Arial, sans-serif;
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.user-email {
+  font-family: 'DM Sans', Arial, sans-serif;
+  font-size: 1rem;
+}
+
+/* Logout Button */
+.logout-btn {
+  padding: 0.75rem 1.5rem;
+  background-color: #D15E60;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+  font-family: 'DM Sans', Arial, sans-serif;
+}
+
+.logout-btn:hover {
+  background-color: #EC9192;
+}
+
+/* Profile Content Section */
+.profile-content h2 {
+  font-family: 'DM Sans', Arial, sans-serif;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Cart Display in Profile */
+#user-carts-container .cart-card {
+  font-family: 'DM Sans', Arial, sans-serif;
+  background-color: white;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+#user-carts-container .cart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+#user-carts-container .cart-meta {
+  font-family: 'DM Sans', Arial, sans-serif;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+#user-carts-container .cart-title-container {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+#user-carts-container .cart-title-container h2 {
+  font-family: 'DM Sans', Arial, sans-serif;
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+#user-carts-container .cart-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+#user-carts-container .cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background-color: white;
+  border-radius: 4px;
+}
+
+#user-carts-container .item-info {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+#user-carts-container .item-category {
+  color: #666;
+  background-color: #f0f0f0;
+  font-size: 0.9rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* No Carts Message */
+.no-carts {
+  text-align: center;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.no-carts h3 {
+  font-family: 'DM Sans', Arial, sans-serif;
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.no-carts p {
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+/* Active Profile Link */
+.nav-profile .profile-link.active {
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  margin: -0.5rem -1rem;
+} 
+
+/* No Recipes Message */
+.no-recipes {
+  text-align: center;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.no-recipes h3 {
+  font-family: 'DM Sans', Arial, sans-serif;
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.no-recipes p {
+  color: #666;
+  margin-bottom: 1rem;
+}
