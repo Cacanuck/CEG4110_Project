@@ -9,7 +9,7 @@ The purpose of the tool is to be able to quickly and easily create an endpoint t
 Make sure that you have the latest version of Python installed.
 
 ### Flask
-Run '''pip install Flask''' in a terminal to install Flask.  I have not tested this with windows powershell or anything with Apple.  I used VSCode's terminal window and that seemed to work for me.
+Run `pip install Flask` , `pip install Flask-SQLAlchemy` , and `pip install flask-cors` in a terminal to install Flask.  I have not tested this with windows powershell or anything with Apple.  I used VSCode's terminal window and that seemed to work for me.
 
 ### Setting Up the Flask Environment Locally
 ***NOTE:*** I have only tested this on Windows so these steps were required.  For Linux or Mac you may not need these steps.
