@@ -1,26 +1,35 @@
 from flask import *
+from flask_cors import CORS
 
 apiSim = Flask(__name__)
+CORS(apiSim)
 
 #Variables and Structs
-ingredients = []
+ingredients = ['Carrots', 'Celery', 'Milk']
+ingredientsJson = {
+    "ingredients": ingredients
+}
 
 
 
 #end Variables and Structs
 
 
-@apiSim.route('/pantry/addItem', methods=['POST, GET, OPTIONS'])
+@apiSim.post('/pantry/addItem')
 def addItem():
-    if request.method == 'POST':
-        try:
-            if request.is_json():
-                newItem = request.json
-        except:
-            print("whatsGoingOnHere?")
+    newItem = request.get_json()
+    print(newItem)
+    ingredients.append(newItem['ingredient'])
+    print(ingredients)
+    return ingredientsJson
 
-        
-    
+
+@apiSim.get('/pantry/getItems')
+def getItems():
+    ingredientsJson = {
+        "ingredients": ingredients
+    }
+    return ingredientsJson
 
 @apiSim.route('/pantry/deleteItem', methods=['POST, GET'])
 def deleteItem():

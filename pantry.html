@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<script>initListPantry()</script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -66,19 +67,33 @@
                 <!--Output list of ingredients area-->
                 <ul class="output" id="outputPantry">
                     <!-- Display list of ingredients here -->
+                     <li>Carrot</li> <!--TODO: add styling for the list items-->
+
                 </ul>
             
         </div>
     </main>
 
     <script>
-        function initListPantry() {
+        async function initListPantry() {
             //setting up js variables
             const outputArea = document.getElementById  ('outputPantry');
             const selectedPantry = document.getElementById('dropDown').value;  //will need later to pick out specific pantries (i.e. dry goods, all, veg, fruit, canned)
             
             //TODO: get pantryList from API 
             // then vvv
+            try {
+                const response = await fetch('http://127.0.0.1:5000/pantry/getItems');
+                if (response.ok) {
+                    const data = await response.json(); 
+                    console.log(data);
+                } 
+                else {
+                    throw new Error('Failed to fetch data');
+                }
+            } catch (error) {
+                console.error('Error:', error); 
+            }
             
             if(pantryList == []) {
                 outputArea.innerHTML = 'No ingredients in Pantry yet';
@@ -91,13 +106,15 @@
             const inputField = document.getElementById('inputIngredient');
             const outputList = document.getElementById('outputPantry');
             const heads = new Headers();
+            json = {
+                "ingredient": inputField.value
+            }
             heads.append("Content-Type", "application/json");
             
             const response = await fetch("http://127.0.0.1:5000/pantry/addItem", {
                 method: "POST",
-                body: JSON.stringify({ ingredient: [inputField.value]}),
+                body: JSON.stringify(json),
                 headers: heads,
-
             });
 
            /* pantryList = []
