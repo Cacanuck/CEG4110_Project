@@ -39,6 +39,21 @@ def deleteItem():
 def index():
     return render_template('index.html')
 
+@apiSim.route('/index')
+def indexAlt():
+    return render_template('index.html')
+
+@apiSim.route('/shoppingCart')
+def shoppingCart():
+    return render_template('shoppingCart.html')
+
+@apiSim.route('/pantry')
+def pantry():
+    return render_template('pantry.html')
+
+@apiSim.route('/recipeDisplay')
+def recipeDisplay():
+    return render_template('recipeDisplay.html')
 
 if __name__ == '__main__':
     apiSim.run()

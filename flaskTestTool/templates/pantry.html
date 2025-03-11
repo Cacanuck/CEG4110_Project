@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/cartStyles.css"> 
-    <link rel="stylesheet" href="css/pantryStyles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/pantryStyles.css') }}">
 
 </head>
 <body>
@@ -33,10 +33,10 @@
 
         <!-- Nav Links -->
         <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="recipeDisplay.html">Recipes</a>
-            <a href="pantry.html">Pantry</a>
-            <a href="shoppingCart.html" class="active">Carts</a>
+            <a href="/index" class="active">Home</a>
+            <a href="/recipeDisplay">Recipes</a>
+            <a href="/pantry">Pantry</a>
+            <a href="/shoppingCart">Carts</a>
         </div>
 
         <!-- Profile -->
