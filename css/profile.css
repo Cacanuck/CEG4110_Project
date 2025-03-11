@@ -252,3 +252,48 @@ body {
   color: #666;
   margin-bottom: 1rem;
 }
+
+#user-recipes-container .recipe-card {
+  font-family: 'DM Sans', Arial, sans-serif;
+  background-color: white;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+#user-recipes-container .recipe-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+#user-recipes-container .recipe-title-container {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+#user-recipes-container .recipe-title-container h2 {
+  font-family: 'DM Sans', Arial, sans-serif;
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+#user-recipes-container .recipe-lists ul,
+#user-recipes-container .recipe-lists ol {
+  list-style: none;
+  padding: 0; 
+  margin: 0; 
+}
+
+#user-recipes-container .recipe-ingredients,
+#user-recipes-container .recipe-steps {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background-color: white;
+  border-radius: 4px;
+}
