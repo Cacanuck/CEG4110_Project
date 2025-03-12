@@ -14,6 +14,7 @@ Run `pip install Flask` , `pip install Flask-SQLAlchemy` , and `pip install flas
 ### Setting Up the Flask Environment Locally
 ***NOTE:*** I have only tested this on Windows so these steps were required.  For Linux or Mac you may not need these steps.
 
+### For Windows
 First, in the VSCode (or other dev environment that has a terminal) run these two commands:
 '''set FLASK_APP=API_sim.py'''
 '''set FLASK_ENV=development'''
