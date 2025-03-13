@@ -14,7 +14,7 @@ ingredientsJson = {
 
 #end Variables and Structs
 
-
+### Pantry Page backend calls
 @apiSim.post('/pantry/addItem')
 def addItem():
     newItem = request.get_json()
@@ -34,6 +34,7 @@ def getItems():
 @apiSim.route('/pantry/deleteItem', methods=['POST, GET'])
 def deleteItem():
     return 'deletedItem'
+### End Pantry Calls
 
 @apiSim.route('/')
 def index():
