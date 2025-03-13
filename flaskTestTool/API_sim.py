@@ -60,7 +60,15 @@ def recipeDisplay():
 def profile():
     return render_template('profile.html')
 
-# Create and Edit Recipe still error
+@apiSim.route('/createRecipe')
+def create_recipe():
+    return render_template('createRecipe.html')
+
+@apiSim.route('/editRecipe')
+def edit_recipe():
+    return render_template('editRecipe.html')
+
+# Edit Recipe cannot be tested yet
 
 if __name__ == '__main__':
     apiSim.run(debug=True)

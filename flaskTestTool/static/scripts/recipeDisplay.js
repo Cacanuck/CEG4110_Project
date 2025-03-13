@@ -14,7 +14,7 @@ function createNav() {
 
   var logoImg = document.createElement("img");
   logoImg.setAttribute("class", "logo");
-  logoImg.setAttribute("src", "./images/GrumpyLogo.svg");
+  logoImg.setAttribute("src", "/static/images/GrumpyLogo.svg");
   logoImg.setAttribute("alt", "GrumpyChef Logo");
   logoImg.setAttribute("width", "40");
   logoImg.setAttribute("height", "40");
@@ -45,7 +45,7 @@ function createNav() {
 
   var profileImg = document.createElement("img");
   profileImg.setAttribute("class", "profile-icon");
-  profileImg.setAttribute("src", "./images/ProfileLogo.svg");
+  profileImg.setAttribute("src", "/static/images/ProfileLogo.svg");
   profileImg.setAttribute("alt", "Profile Icon");
   profileImg.setAttribute("width", "30");
   profileImg.setAttribute("height", "30");
@@ -76,7 +76,7 @@ function editRecipeButton(recipeName) {
     var recipeEdit = recipes.find((r) => r.dish === recipeName);
     if (recipeEdit) {
       localStorage.setItem("editRecipe", JSON.stringify(recipeEdit));
-      window.location.href = "editRecipe.html";
+      window.location.href = "editRecipe";
     }
   });
   return button;
