@@ -268,10 +268,10 @@ document.addEventListener("keydown", function (event) {
 
 function createNav() {
   var navLinks = [
-    { text: "Home", href: "index.html" },
-    { text: "Recipes", href: "recipeDisplay.html" },
-    { text: "Pantry", href: "pantry.html" },
-    { text: "Carts", href: "shoppingCart.html" },
+    { text: "Home", href: "index" },
+    { text: "Recipes", href: "recipeDisplay" },
+    { text: "Pantry", href: "pantry" },
+    { text: "Carts", href: "shoppingCart" },
   ];
   var nav = document.querySelector("nav");
   nav.classList.add("navbar");
@@ -305,7 +305,7 @@ function createNav() {
   var profileDiv = document.createElement("div");
   profileDiv.classList.add("nav-profile");
   var profileLink = document.createElement("a");
-  profileLink.href = "profile.html";
+  profileLink.href = "profile";
   profileLink.classList.add("profile-link");
   var profileText = document.createElement("span");
   profileText.textContent = "Profile";

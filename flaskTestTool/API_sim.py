@@ -55,5 +55,11 @@ def pantry():
 def recipeDisplay():
     return render_template('recipeDisplay.html')
 
+@apiSim.route('/profile')
+def profile():
+    return render_template('profile.html')
+
+# Create and Edit Recipe still error
+
 if __name__ == '__main__':
-    apiSim.run()
+    apiSim.run(debug=True)

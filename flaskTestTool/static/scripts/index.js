@@ -41,7 +41,7 @@ function createLoginButton() {
   button.textContent = "Login";
   button.id = "loginButton";
   button.addEventListener("click", function () {
-    window.location.href = "profile.html";
+    window.location.href = "profile";
   });
   document.querySelector("section").appendChild(button);
 }
