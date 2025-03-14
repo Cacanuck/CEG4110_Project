@@ -180,7 +180,7 @@ function createInstructionsForm(edit = null) {
     submitButton.textContent = "Create Recipe";
     submitButton.addEventListener("click", function (event) {
       submitForm(event);
-      window.location.href = "recipeDisplay.html";
+      window.location.href = "recipeDisplay";
     });
     div.appendChild(submitButton);
   }
@@ -242,7 +242,7 @@ function submitForm(event) {
   }
   localStorage.setItem("recipes", JSON.stringify(recipes));
 
-  window.location.href = "recipeDisplay.html";
+  window.location.href = "recipeDisplay";
 }
 
 document.addEventListener("keydown", function (event) {

@@ -107,7 +107,7 @@ function displayUserCarts() {
 
 // Handle Logout
 function handleLogout() {
-    window.location.href = 'index.html';
+    window.location.href = 'index';
 }
 
 // Event Listeners

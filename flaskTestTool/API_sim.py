@@ -1,8 +1,14 @@
 from flask import *
 from flask_cors import CORS
+from config import db
+from models import recipe
 
 apiSim = Flask(__name__)
 CORS(apiSim)
+
+apiSim.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
+apiSim.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+db.init_app(apiSim)
 
 #Variables and Structs
 ingredients = ['Carrots', 'Celery', 'Milk']
@@ -52,23 +58,44 @@ def shoppingCart():
 def pantry():
     return render_template('pantry.html')
 
-@apiSim.route('/recipeDisplay')
-def recipeDisplay():
-    return render_template('recipeDisplay.html')
-
 @apiSim.route('/profile')
 def profile():
     return render_template('profile.html')
 
-@apiSim.route('/createRecipe')
+@apiSim.route('/recipeDisplay')
+def recipeDisplay():
+    return render_template('recipeDisplay.html')
+
+@apiSim.route('/createRecipe', methods=["GET", "POST"])
 def create_recipe():
+    if request.method == "POST":
+        dish = request.json.get("dish")
+        size = request.json.get("size")
+        measure = request.json.get("measure")
+        ingredient = request.json.get("ingredient")
+        instruction = request.json.get("instruction")
+    
+        if not dish or size or measure or ingredient or instruction:
+            return (
+                jsonify({"message": "Must enter Dish Name, Size, Measure, Ingredient, and Instruction"}), 400,
+            )
+        
+        new_recipe = recipe(dish=dish, size=size, measure=measure, ingredient=ingredient, instruction=instruction)
+        try:
+            db.session.add(new_recipe)
+            db.session.commit()
+        except Exception as e:
+            return jsonify({"message": str(e)}), 400
+    
+        return jsonify({"message": "Recipe Created"}), 201
+    
     return render_template('createRecipe.html')
 
 @apiSim.route('/editRecipe')
 def edit_recipe():
     return render_template('editRecipe.html')
 
-# Edit Recipe cannot be tested yet
-
 if __name__ == '__main__':
+    with apiSim.app_context():
+        db.create_all()
     apiSim.run(debug=True)
