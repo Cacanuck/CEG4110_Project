@@ -47,7 +47,40 @@ function createLoginButton() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  createUsernameForm();
-  createPasswordForm();
-  createLoginButton();
+  const loginForm = document.getElementById('login-form');
+  
+  if (loginForm) {
+    loginForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      
+      if (!email || !password) {
+        alert('Please enter both email and password');
+        return;
+      }
+      
+      try {
+        const response = await fetch('/index', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          window.location.href = '/profile';
+        } else {
+          alert(data.message || 'Invalid email or password');
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        alert('Error connecting to server');
+      }
+    });
+  }
 });
