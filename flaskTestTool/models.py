@@ -37,3 +37,19 @@ class newUser(db.Model):
             "email": self.email,
             "password": self.password
         }
+    
+class pantry(db.Model):
+    __tablename__= 'pantry'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(100), nullable=False)
+    amount = db.Column(db.Integer, nullable=False)
+    units = db.Column(db.String(50), nullable=False)
+    
+    def to_json(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "amount": self.amount,
+            "units": self.units
+        }
