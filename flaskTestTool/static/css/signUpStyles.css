@@ -1,0 +1,203 @@
+/* Reset Default Browser Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Base Body Styles */
+body {
+    font-family: 'DM Sans', Arial, sans-serif;
+    line-height: 1.6;
+    background-color: white;
+}
+
+/* Navigation Bar Styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #8499B1;
+    color: white;
+    font-family: 'Playfair Display', 'serif';
+}
+
+/* Logo & Profile Icon Styles */
+.logo {
+    width: 40px;
+    height: 40px;
+    display: block;
+}
+
+.profile-icon {
+    width: 35px;
+    height: 35px;
+    display: block;
+}
+
+/* Logo Section Styles */
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    font-family: 'Playfair Display', serif;
+}
+
+/* Nav Link Styles */
+.nav-links {
+    display: flex;
+    gap: 6rem;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+}
+
+/* Active Tab */
+.nav-links a.active {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+/* Profile Section Styles */
+.nav-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+}
+
+.profile-link {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    text-decoration: none;
+    color: white;
+}
+
+.profile-link:hover {
+    opacity: 0.8;
+}
+
+/* Signup Forms */
+.auth-container {
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.auth-header {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.auth-form {
+    display: block;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #ff6b6b;
+    border-radius: 5px;
+    font-family: 'DM Sans', sans-serif;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(81, 207, 102, 0.2);
+}
+
+.form-group input.has-value {
+    border-color: #51cf66;
+}
+
+.auth-button {
+    width: 100%;
+    padding: 1rem;
+    background-color: #F4C846;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.auth-button:hover {
+    background-color: #F3DFA2;
+}
+
+/* Error and Success Messages */
+.message {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    text-align: center;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.error {
+    background-color: #ffe5e5;
+    color: #ff3333;
+    border: 1px solid #ffcccc;
+}
+
+.success {
+    background-color: #e5ffe5;
+    color: #008000;
+    border: 1px solid #ccffcc;
+}
+
+/* Toggle Link */
+.auth-toggle {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.toggle-btn {
+    color: #8499B1;
+    text-decoration: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+}
+
+.toggle-btn:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 480px) {
+    .auth-container {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+
+    .form-group input {
+        padding: 0.5rem;
+    }
+    
+    .nav-links {
+        gap: 2rem;
+    }
+}
