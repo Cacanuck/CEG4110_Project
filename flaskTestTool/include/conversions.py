@@ -1,4 +1,10 @@
 #This is the conversion helper functions file.  It takes an input of an amount and a unit and then outputs in the requested units
+
+#TODO: 
+## Catch liquid units and only convert to other liquid units
+## Lots of testing
+## Catch all variants of unit names
+#End TODO
 class Conversions:
     def convert(self, amount, units, outUnits):
         gramToOunce = 0.035274
@@ -8,11 +14,16 @@ class Conversions:
         outputUnits = outUnits
         isMetricInput = self.checkMetric(inputUnits)
         isMetricOutput = self.checkMetric(outputUnits)
+        isSpoonsInput = self.checkSpoons(inputUnits)
+        isSpoonsOutput = self.checkSpoons(outputUnits)
         #conversion logic checks
         if isMetricInput == True:
             madeSmall = self.makeSmallMetric(inputAmount, inputUnits)  #gets the number of units in smallest unit in metric
         else:
-            madeSmall = self.makeSmallImperial(inputAmount, inputUnits) #gets the number of units in smallest unit in imperial
+            if isSpoonsInput == True: 
+                madeSmall = self.makeSmallSpoons(inputAmount, inputUnits)
+            else:
+                madeSmall = self.makeSmallImperial(inputAmount, inputUnits) #gets the number of units in smallest unit in imperial
 
         if isMetricOutput == True: #metric output
             if isMetricInput == True: #metric to metric conversion
@@ -20,6 +31,11 @@ class Conversions:
             else:   #imperial to metric conversion
                 madeSmall = madeSmall * ouncetoGram
                 converted = self.getOutputUnitsMetric(madeSmall, outputUnits)
+        elif isSpoonsOutput == True: #spoons output
+            if isMetricInput == True:
+                converted = self.getOutputUnitsSpoonsMetric(madeSmall, outputUnits)
+            else:
+                converted = self.getOutputUnitsSpoonsImperial(madeSmall, outputUnits)
         else:   #imperial output
             if isMetricInput == False: #imperial to imperial conversion
                 converted = self.getOutputUnitsImperial(madeSmall, outputUnits)
@@ -31,6 +47,21 @@ class Conversions:
         return [converted, outputUnits] #returns pair of values containing number of units and units
 
         #unit types: imperial (ounce, pound, cup, quart, gallon, floz, teaspoon, pint) and metric (liter, mililiter, gram, miligram, kilogram)
+
+    def makeSmallSpoons(self, inputAmount, inputUnits):
+        if(inputUnits == "teaspoon"):
+            inputAmount = inputAmount * 0.166667
+        
+        elif(inputUnits == "tsp"):
+            inputAmount = inputAmount * 0.166667
+
+        elif(inputUnits == "tablespoon"):
+            inputAmount = inputAmount * 0.5
+
+        elif(inputUnits == "tbsp"):
+            inputAmount = inputAmount * 0.5
+
+            return inputAmount
 
     def makeSmallImperial(self, inputAmount, inputUnits):
         if (inputUnits == "pound"):
@@ -86,7 +117,40 @@ class Conversions:
         unit = outputUnits
 
         if(unit == 'kilogram'):
-            madeSmall
+            madeSmall = madeSmall / 1000
+
+        elif(unit == 'gram'):
+            madeSmall = madeSmall
+        
+        elif(unit == "liter"):
+            madeSmall = madeSmall / 1000
+
+        elif(unit == 'mililiter'):
+            madeSmall = madeSmall
+
+        return madeSmall
+
+    def getOutputUnitsSpoonsImperial(self, madeSmall, outputUnits):
+        unit = outputUnits
+
+        if(unit == "teaspoon"):
+            madeSmall = madeSmall * 6
+
+        elif(unit == "tablespoon"):
+            madeSmall = madeSmall * 2
+
+        return madeSmall
+
+    def getOutputUnitsSpoonsMetric(self, madeSmall, outputUnits):
+        unit = outputUnits
+        
+        if(unit == "teaspoon"):
+            madeSmall = madeSmall * 0.202884
+        
+        elif(unit == "tablespoon"):
+            madeSmall = madeSmall * 0.067628
+
+        return madeSmall
 
     def checkMetric(self, inputUnits):
         metricUnits = ['g', 'kg', 'gram', 'kilogram', 'l', 'liter', 'ml', 'mililiter']
@@ -97,4 +161,11 @@ class Conversions:
         else:
             return False
         
+    def checkSpoons(self, inputUnits):
+        spoons = ["tsp", "teaspoon", "tbsp", "tablespoon"]
 
+        if spoons.__contains__(str(inputUnits).lower().strip().replace(' ', '')):
+            return True
+        
+        else:
+            return False
