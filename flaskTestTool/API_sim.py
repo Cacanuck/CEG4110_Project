@@ -1,7 +1,7 @@
 from flask import *
 from flask_cors import CORS
 from config import db
-from models import recipe, newUser
+from models import Recipe, newUser, Ingredient, Instruction
 import hashlib
 import sqlite3
 
@@ -174,38 +174,75 @@ def profile():
         print(f"Profile route error: {str(e)}")
         return redirect(url_for('index'))
 
-@apiSim.route('/recipeDisplay')
+@apiSim.route('/recipeDisplay', methods=['GET'])
 def recipeDisplay():
-    return render_template('recipeDisplay.html')
-
-@apiSim.route('/createRecipe', methods=["GET", "POST"])
-def create_recipe():
-    if request.method == "POST":
-        dish = request.json.get("dish")
-        size = request.json.get("size")
-        measure = request.json.get("measure")
-        ingredient = request.json.get("ingredient")
-        instruction = request.json.get("instruction")
+    recipes = Recipe.query.all()
     
-        if not dish or size or measure or ingredient or instruction:
-            return (
-                jsonify({"message": "Must enter Dish Name, Size, Measure, Ingredient, and Instruction"}), 400,
-            )
+    recipe_list = []
+    for recipe in recipes:
+        recipe_data = {
+            'dish': recipe.dish,
+            'ingredients': [{'size': ingredient.size, 'measure': ingredient.measure, 'ingredient': ingredient.ingredient} for ingredient in recipe.ingredients],
+            'instrucitons': [instruction.step for instruction in recipe.instructions]
+        }
+        recipe_list.append(recipe_data)
         
-        new_recipe = recipe(dish=dish, size=size, measure=measure, ingredient=ingredient, instruction=instruction)
-        try:
-            db.session.add(new_recipe)
-            db.session.commit()
-        except Exception as e:
-            return jsonify({"message": str(e)}), 400
-    
-        return jsonify({"message": "Recipe Created"}), 201
+    return jsonify(recipe_list)
+    # return render_template('recipeDisplay.html')
+
+@apiSim.route('/createRecipe')
+def create_recipe():
     
     return render_template('createRecipe.html')
+
+@apiSim.route('/submitRecipe', methods=["POST"])
+def submit_recipe():
+    recipe_data = request.get_json()
+    new_recipe = Recipe(dish=recipe_data['dish'])
+    
+    for ingredient_data in recipe_data['ingredients']:
+        ingredient = Ingredient(
+            size=ingredient_data['size'],
+            measure=ingredient_data['measure'],
+            ingredient=ingredient_data['ingredient'],
+        )
+        db.session.add(ingredient)
+        
+    for step in recipe_data['instructions']:
+        instruction = Instruction(step=step, recipe=new_recipe)
+        db.session.add(instruction)
+        
+    db.session.add(new_recipe)
+    db.session.commit()
+    
+    return jsonify({'message': 'Recipe Saved'}), 201
+
+@apiSim.route('/getRecipes', methods=['GET'])
+def get_recipes():
+    recipes = Recipe.query.all()
+    recipe_list = []
+    for recipe in recipes:
+        recipe_data = {
+            'id': recipe.id,
+            'dish': recipe.dish,
+            'ingredients': [{'size': i.size, 'measure': i.measure, 'ingredient': i.ingredient} for i in recipe.ingredients],
+            'instructions': [j.step for j in recipe.instructions],
+        }
+        recipe_list.append(recipe_data)
+    return jsonify(recipe_list)
 
 @apiSim.route('/editRecipe')
 def edit_recipe():
     return render_template('editRecipe.html')
+
+@apiSim.route('/deleteRecipe/<int:recipe_id>', methods=['DELETE'])
+def delete_recipe(recipe_id):
+    recipe = Recipe.query.get(recipe_id)
+    if recipe:
+        db.session.delete(recipe)
+        db.session.commit()
+        return '', 204
+    return jsonify({"message": "Recipe not found"}), 404
 
 if __name__ == '__main__':
     with apiSim.app_context():

@@ -1,16 +1,6 @@
 var stepNum = 0;
-var storedRecipe = localStorage.getItem("editRecipe");
-var editRecipe = null;
 
-try {
-  if (storedRecipe) {
-    editRecipe = JSON.parse(storedRecipe);
-  }
-} catch (error) {
-  console.log("Error with getting editRecipe from localStorage", error);
-}
-
-function createDishForm(edit = null) {
+function createDishForm() {
   var main = document.querySelector("main");
   var form = document.createElement("form");
   form.setAttribute("method", "post");
@@ -25,14 +15,11 @@ function createDishForm(edit = null) {
   dishInput.setAttribute("type", "text");
   dishInput.setAttribute("name", "dish");
   dishInput.classList.add("Dish", "input");
-  if (edit) {
-    dishInput.value = edit.dish;
-  }
   form.appendChild(dishInput);
   main.appendChild(form);
 }
 
-function createIngredientForm(edit = null) {
+function createIngredientForm() {
   var section = document.querySelector("section");
   var form = document.createElement("form");
   form.setAttribute("method", "post");
@@ -65,15 +52,6 @@ function createIngredientForm(edit = null) {
   ingredientInput.setAttribute("name", "ingredient");
   ingredientInput.classList.add("Ingredient", "input");
   form.appendChild(ingredientInput);
-
-  if (edit) {
-    var index = document.querySelectorAll(".ingredientForm").length;
-    if (edit.ingredients[index]) {
-      sizeInput.value = edit.ingredients[index].size;
-      measureInput.value = edit.ingredients[index].measure;
-      ingredientInput.value = edit.ingredients[index].ingredient;
-    }
-  }
 
   var lastForm = document.querySelector(".ingredientForm:last-of-type");
   if (lastForm) {
@@ -118,7 +96,7 @@ function updateIngredientDeleteButtons() {
   });
 }
 
-function createInstructionsForm(edit = null) {
+function createInstructionsForm() {
   var div = document.querySelector(".instructionDiv");
   var form = document.createElement("form");
   form.setAttribute("method", "post");
@@ -169,10 +147,6 @@ function createInstructionsForm(edit = null) {
 
   form.append(instructionButton);
   form.append(deleteInstructionButton);
-
-  if (edit && edit.instructions.length >= stepNum) {
-    stepInput.value = edit.instructions[stepNum - 1];
-  }
 
   if (!document.querySelector("#submitButton")) {
     var submitButton = document.createElement("button");
@@ -228,21 +202,21 @@ function submitForm(event) {
     recipeData.instructions.push(step);
   });
 
-  var recipes = JSON.parse(localStorage.getItem("recipes")) || [];
-  var storedEditRecipe = localStorage.getItem("editRecipe");
-  if (storedEditRecipe) {
-    var editRecipe = JSON.parse(storedEditRecipe);
-    var index = recipes.findIndex((recipe) => recipe.dish === editRecipe.dish);
-    if (index !== -1) {
-      recipes[index] = recipeData;
-    }
-    localStorage.removeItem("editRecipe");
-  } else {
-    recipes.push(recipeData);
-  }
-  localStorage.setItem("recipes", JSON.stringify(recipes));
-
-  window.location.href = "recipeDisplay";
+  fetch("/submitRecipe", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(recipeData),
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log("Recipe saved:", data);
+    window.location.href = "/recipeDisplay";
+  })
+  .catch(error => {
+    console.log("Error saving recipe: ", error)
+  })
 }
 
 document.addEventListener("keydown", function (event) {
@@ -338,19 +312,10 @@ function populateHeading(headingText, locationTag) {
 
 document.addEventListener("DOMContentLoaded", function () {
   populateHeading("Name of Dish", "main");
-  createDishForm(editRecipe);
+  createDishForm();
   populateHeading("Ingredients", "section");
-  if (editRecipe && editRecipe.ingredients.length > 0) {
-    editRecipe.ingredients.forEach(() => createIngredientForm(editRecipe));
-  } else {
-    createIngredientForm();
-  }
+  createIngredientForm();
   populateHeading("Instructions", "div");
-  if (editRecipe && editRecipe.instructions.length > 0) {
-    editRecipe.instructions.forEach(() => createInstructionsForm(editRecipe));
-  } else {
-    createInstructionsForm();
-  }
+  createInstructionsForm();
   createNav();
-  localStorage.removeItem("editRecipe");
 });

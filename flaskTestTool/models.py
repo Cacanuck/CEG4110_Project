@@ -1,12 +1,12 @@
 from config import db
 
-class recipe(db.Model):
+class Recipe(db.Model):
     __tablename__ = 'recipe'
     
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     dish = db.Column(db.String(100), nullable=False)
-    ingredients = db.relationship('ingredient', backref='recipe', lazy=True)
-    instructions = db.relationship('Instruction', backref='recipe', lazy=True)
+    ingredients = db.relationship('Ingredient', back_populates='recipe', lazy='subquery')
+    instructions = db.relationship('Instruction', back_populates='recipe', lazy='subquery')
     
     def to_json(self):
         return {
@@ -16,14 +16,16 @@ class recipe(db.Model):
             "instructions": [instruction.to_json() for instruction in self.instructions],
         }
     
-class ingredient(db.Model):
+class Ingredient(db.Model):
     __tablename__ = 'ingredient'
     
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'), nullable=False)
     size = db.Column(db.Integer, nullable=False)
-    measure = db.Column(db.String(50), nullable=False)
+    measure = db.Column(db.String, nullable=False)
     ingredient = db.Column(db.String(100), nullable=False)
+    
+    recipe = db.relationship('Recipe', back_populates='ingredients')
     
     def to_json(self):
         return {
@@ -39,6 +41,8 @@ class Instruction(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'), nullable=False)
     instruction = db.Column(db.String(200), nullable=False)
+    
+    recipe = db.relationship('Recipe', back_populates='instructions')
     
     def to_json(self):
         return {
