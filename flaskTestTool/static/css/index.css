@@ -218,3 +218,15 @@ body {
 .signup-link:hover {
     text-decoration: underline;
 }
+
+.error-message {
+    background-color: #ffe5e5;
+    color: #ff3333;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    border: 1px solid #ffcccc;
+}

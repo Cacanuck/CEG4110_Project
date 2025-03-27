@@ -5,7 +5,7 @@ class recipe(db.Model):
     
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     dish = db.Column(db.String(100), nullable=False)
-    ingredients = db.relationship('Ingredient', backref='recipe', lazy=True)
+    ingredients = db.relationship('ingredient', backref='recipe', lazy=True)
     instructions = db.relationship('Instruction', backref='recipe', lazy=True)
     
     def to_json(self):
@@ -16,13 +16,13 @@ class recipe(db.Model):
             "instructions": [instruction.to_json() for instruction in self.instructions],
         }
     
-class ingredient(db.model):
+class ingredient(db.Model):
     __tablename__ = 'ingredient'
     
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'), nullable=False)
     size = db.Column(db.Integer, nullable=False)
-    measure = db.Column(db.Integer, nullable=False)
+    measure = db.Column(db.String(50), nullable=False)
     ingredient = db.Column(db.String(100), nullable=False)
     
     def to_json(self):
