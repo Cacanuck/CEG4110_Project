@@ -59,8 +59,43 @@ def deleteItem():
 def index():
     return render_template('index.html')
 
-@apiSim.route('/index')
+@apiSim.route('/home')
+def home():
+    return render_template('home.html')
+
+@apiSim.route('/index', methods=['GET', 'POST'])
 def indexAlt():
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            if not data:
+                return jsonify({'message': 'No data provided'}), 400
+            
+            email = data.get('email')
+            password = data.get('password')
+            
+            if not email or not password:
+                return jsonify({'message': 'Please enter both email and password'}), 400
+            
+            # Find user by email
+            user = newUser.query.filter_by(email=email).first()
+            
+            if user and user.password == password:
+                # Return user data without password
+                user_data = {
+                    'id': user.id,
+                    'firstName': user.firstName,
+                    'lastName': user.lastName,
+                    'email': user.email
+                }
+                return jsonify(user_data), 200
+            else:
+                return jsonify({'message': 'Invalid email or password'}), 401
+                
+        except Exception as e:
+            print(f"Login error: {str(e)}")
+            return jsonify({'message': 'Error processing login request'}), 500
+            
     return render_template('index.html')
 
 @apiSim.route('/signUp', methods=["GET", "POST"])
@@ -132,7 +167,12 @@ def pantry():
 
 @apiSim.route('/profile')
 def profile():
-    return render_template('profile.html')
+    try:
+        # Check if user is logged in by looking for userData in session storage
+        return render_template('profile.html')
+    except Exception as e:
+        print(f"Profile route error: {str(e)}")
+        return redirect(url_for('index'))
 
 @apiSim.route('/recipeDisplay')
 def recipeDisplay():
