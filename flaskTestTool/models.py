@@ -1,25 +1,55 @@
 from config import db
 
-class recipe(db.Model):
+class Recipe(db.Model):
     __tablename__ = 'recipe'
     
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     dish = db.Column(db.String(100), nullable=False)
-    size = db.Column(db.Integer, nullable=False)
-    measure = db.Column(db.Integer, nullable=False)
-    ingredient = db.Column(db.String(100), nullable=False)
-    instruction = db.Column(db.String(200), nullable=False)
+    ingredients = db.relationship('Ingredient', back_populates='recipe', lazy='subquery')
+    instructions = db.relationship('Instruction', back_populates='recipe', lazy='subquery')
     
     def to_json(self):
         return {
             "id": self.id,
             "dish": self.dish,
+            "ingredients": [ingredient.to_json() for ingredient in self.ingredients],
+            "instructions": [instruction.to_json() for instruction in self.instructions],
+        }
+    
+class Ingredient(db.Model):
+    __tablename__ = 'ingredient'
+    
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'), nullable=False)
+    size = db.Column(db.Integer, nullable=False)
+    measure = db.Column(db.String, nullable=False)
+    ingredient = db.Column(db.String(100), nullable=False)
+    
+    recipe = db.relationship('Recipe', back_populates='ingredients')
+    
+    def to_json(self):
+        return {
+            "id": self.id,
             "size": self.size,
             "measure": self.measure,
             "ingredient": self.ingredient,
-            "instructions": self.instruction,
         }
+        
+class Instruction(db.Model):
+    __tablename__ = 'instruction'
     
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'), nullable=False)
+    instruction = db.Column(db.String(200), nullable=False)
+    
+    recipe = db.relationship('Recipe', back_populates='instructions')
+    
+    def to_json(self):
+        return {
+            "id": self.id,
+            "instruction": self.instruction,
+        }
+
 class newUser(db.Model):
     __tablename__ = 'new_user'
     
