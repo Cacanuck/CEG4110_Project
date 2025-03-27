@@ -48,6 +48,18 @@ function createLoginButton() {
 
 document.addEventListener("DOMContentLoaded", function () {
   const loginForm = document.getElementById('login-form');
+  const errorMessage = document.createElement('div');
+  errorMessage.className = 'error-message';
+  errorMessage.style.display = 'none';
+  loginForm.insertBefore(errorMessage, loginForm.firstChild);
+  
+  function showError(message) {
+    errorMessage.textContent = message;
+    errorMessage.style.display = 'block';
+    setTimeout(() => {
+      errorMessage.style.display = 'none';
+    }, 3000);
+  }
   
   if (loginForm) {
     loginForm.addEventListener('submit', async function(e) {
@@ -57,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const password = document.getElementById('password').value;
       
       if (!email || !password) {
-        alert('Please enter both email and password');
+        showError('Please enter both email and password');
         return;
       }
       
@@ -73,13 +85,16 @@ document.addEventListener("DOMContentLoaded", function () {
         const data = await response.json();
         
         if (response.ok) {
+          // Store user data in sessionStorage with the correct key
+          sessionStorage.setItem('userData', JSON.stringify(data));
+          // Redirect to profile page
           window.location.href = '/profile';
         } else {
-          alert(data.message || 'Invalid email or password');
+          showError(data.message || 'Invalid email or password');
         }
       } catch (error) {
         console.error('Login error:', error);
-        alert('Error connecting to server');
+        showError('Error connecting to server');
       }
     });
   }
