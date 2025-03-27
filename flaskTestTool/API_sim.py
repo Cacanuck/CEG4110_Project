@@ -16,9 +16,9 @@ db.init_app(apiSim)
 # Create tables with proper schema
 def init_db():
     with apiSim.app_context():
-        # Drop existing tables if they exist and create new tables
-        db.drop_all()
+        # Create tables if they don't exist
         db.create_all()
+
 # Initialize database on startup
 init_db()
 
@@ -197,25 +197,42 @@ def create_recipe():
 
 @apiSim.route('/submitRecipe', methods=["POST"])
 def submit_recipe():
-    recipe_data = request.get_json()
-    new_recipe = Recipe(dish=recipe_data['dish'])
-    
-    for ingredient_data in recipe_data['ingredients']:
-        ingredient = Ingredient(
-            size=ingredient_data['size'],
-            measure=ingredient_data['measure'],
-            ingredient=ingredient_data['ingredient'],
-        )
-        db.session.add(ingredient)
+    try:
+        recipe_data = request.get_json()
+        if not recipe_data:
+            return jsonify({'message': 'No recipe data provided'}), 400
+            
+        # Create new recipe
+        new_recipe = Recipe(dish=recipe_data['dish'])
+        db.session.add(new_recipe)
+        db.session.flush()  # Get the recipe ID without committing
         
-    for step in recipe_data['instructions']:
-        instruction = Instruction(step=step, recipe=new_recipe)
-        db.session.add(instruction)
+        # Add ingredients
+        for ingredient_data in recipe_data['ingredients']:
+            ingredient = Ingredient(
+                recipe_id=new_recipe.id,
+                size=ingredient_data['size'],
+                measure=ingredient_data['measure'],
+                ingredient=ingredient_data['ingredient']
+            )
+            db.session.add(ingredient)
         
-    db.session.add(new_recipe)
-    db.session.commit()
-    
-    return jsonify({'message': 'Recipe Saved'}), 201
+        # Add instructions
+        for step in recipe_data['instructions']:
+            instruction = Instruction(
+                recipe_id=new_recipe.id,
+                instruction=step
+            )
+            db.session.add(instruction)
+        
+        # Commit changes
+        db.session.commit()
+        return jsonify({'message': 'Recipe saved successfully', 'recipe_id': new_recipe.id}), 201
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error saving recipe: {str(e)}")
+        return jsonify({'message': f'Error saving recipe: {str(e)}'}), 500
 
 @apiSim.route('/getRecipes', methods=['GET'])
 def get_recipes():
