@@ -2,6 +2,20 @@
 const userCartsContainer = document.getElementById('user-carts-container');
 const userRecipesContainer = document.getElementById('user-recipes-container');
 const logoutBtn = document.getElementById('logout-btn');
+const userNameElement = document.querySelector('.user-name');
+const userEmailElement = document.querySelector('.user-email');
+
+// Get User Information From Session Storage
+function getUserInfo() {
+    const userData = JSON.parse(sessionStorage.getItem('userData'));
+    if (userData) {
+        userNameElement.textContent = `${userData.firstName} ${userData.lastName}`;
+        userEmailElement.textContent = userData.email;
+    } else {
+        // If no user data is found, redirect to login page
+        window.location.href = '/index';
+    }
+}
 
 // Get User Carts From Local Storage
 function getUserCarts() {
@@ -107,12 +121,16 @@ function displayUserCarts() {
 
 // Handle Logout
 function handleLogout() {
-    window.location.href = 'index';
+    // Clear user data from session storage
+    sessionStorage.removeItem('userData');
+    // Redirect to home page
+    window.location.href = '/index';
 }
 
 // Event Listeners
 logoutBtn.addEventListener('click', handleLogout);
 
 // Initialize Display
+getUserInfo();
 displayUserCarts(); 
 displayUserRecipes();
