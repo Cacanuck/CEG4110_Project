@@ -1,5 +1,18 @@
 const APIURL = 'http://127.0.0.1:5000';
 
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if user is logged in
+    const userData = JSON.parse(sessionStorage.getItem('userData'));
+    if (!userData) {
+        // If not logged in, redirect to login page
+        window.location.href = '/index';
+        return;
+    }
+    
+    // If logged in, fetch recipes
+    fetchRecipes();
+});
+
 async function fetchRecipes() {
   try {
     const response = await fetch(`${APIURL}/getRecipes`);
@@ -26,7 +39,7 @@ async function deleteRecipe(recipeId, recipeElement) {
 
 function createNav() {
   const navLinks = [
-    { text: "Home", href: "index" },
+    { text: "Home", href: "home" },
     { text: "Recipes", href: "recipeDisplay" },
     { text: "Pantry", href: "pantry" },
     { text: "Carts", href: "shoppingCart" },

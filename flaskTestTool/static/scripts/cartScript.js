@@ -1,13 +1,31 @@
-// Initialize Carts Array from Local Storage or Create Empty Array if None Exist
-let carts = JSON.parse(localStorage.getItem('carts')) || [];
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if user is logged in
+    const userData = JSON.parse(sessionStorage.getItem('userData'));
+    if (!userData) {
+        // If not logged in, redirect to login page
+        window.location.href = '/index';
+        return;
+    }
+    
+    // If logged in, initialize cart functionality
+    initializeCart();
+});
 
-// DOM Element References
-const cartsContainer = document.getElementById('carts-container');
-const createCartBtn = document.getElementById('create-cart-btn');
-const modal = document.getElementById('cart-modal');
-const closeBtn = document.querySelector('.close');
-const cartForm = document.getElementById('cart-form');
-const addItemBtn = document.getElementById('add-item-btn');
+function initializeCart() {
+    // Initialize Carts Array from Local Storage or Create Empty Array if None Exist
+    let carts = JSON.parse(localStorage.getItem('carts')) || [];
+
+    // DOM Element References
+    const cartsContainer = document.getElementById('carts-container');
+    const createCartBtn = document.getElementById('create-cart-btn');
+    const modal = document.getElementById('cart-modal');
+    const closeBtn = document.querySelector('.close');
+    const cartForm = document.getElementById('cart-form');
+    const addItemBtn = document.getElementById('add-item-btn');
+
+    // Display all Carts in Container
+    displayCarts();
+}
 
 // Helper Function to Generate Unique IDs for Carts/Items
 function generateId(prefix) {
