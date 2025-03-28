@@ -5,13 +5,16 @@ class Recipe(db.Model):
     
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     dish = db.Column(db.String(100), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('new_user.id'), nullable=False)
     ingredients = db.relationship('Ingredient', back_populates='recipe', lazy='subquery')
     instructions = db.relationship('Instruction', back_populates='recipe', lazy='subquery')
+    user = db.relationship('newUser', backref=db.backref('recipes', lazy=True))
     
     def to_json(self):
         return {
             "id": self.id,
             "dish": self.dish,
+            "user_id": self.user_id,
             "ingredients": [ingredient.to_json() for ingredient in self.ingredients],
             "instructions": [instruction.to_json() for instruction in self.instructions],
         }
