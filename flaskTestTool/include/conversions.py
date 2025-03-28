@@ -49,55 +49,49 @@ class Conversions:
         #unit types: imperial (ounce, pound, cup, quart, gallon, floz, teaspoon, pint) and metric (liter, mililiter, gram, miligram, kilogram)
 
     def makeSmallSpoons(self, inputAmount, inputUnits):
-        if(inputUnits == "teaspoon"):
-            inputAmount = inputAmount * 0.166667
-        
-        elif(inputUnits == "tsp"):
+        if(inputUnits == "teaspoon" or "tsp"):
             inputAmount = inputAmount * 0.166667
 
-        elif(inputUnits == "tablespoon"):
-            inputAmount = inputAmount * 0.5
-
-        elif(inputUnits == "tbsp"):
+        elif(inputUnits == "tablespoon" or "tbsp"):
             inputAmount = inputAmount * 0.5
 
             return inputAmount
 
     def makeSmallImperial(self, inputAmount, inputUnits):
-        if (inputUnits == "pound"):
+        if (inputUnits == "pound" or "lbs" or "lb"):
             inputAmount = inputAmount * 16
 
-        elif (inputUnits == "ounce"):
+        elif (inputUnits == "ounce" or "oz"):
             inputAmount = inputAmount
         
-        elif (inputUnits == "fluid ounces"):
+        elif (inputUnits == "fluid ounces" or "floz"):
             inputAmount = inputAmount
         
-        elif (inputUnits == "gallon"):
+        elif (inputUnits == "gallon" or "gal"):
             inputAmount = inputAmount * 128
         
-        elif (inputUnits == "quart"):
+        elif (inputUnits == "quart" or "qt"):
             inputAmount = inputAmount * 32
         
-        elif (inputUnits == "pint"):
+        elif (inputUnits == "pint" or "pt" or "pnt" or "p"):
             inputAmount = inputAmount * 16
 
-        elif (inputUnits == "cup"):
+        elif (inputUnits == "cup" or "cp" or "c"):
             inputAmount = inputAmount * 8.11537
 
         return inputAmount
     
     def makeSmallMetric(self, inputAmount, inputUnits):
-        if (inputUnits == "liter"):
+        if (inputUnits == "liter" or "l"):
             inputAmount = inputAmount * 1000
 
-        elif(inputUnits == "milliliter"):
+        elif(inputUnits == "milliliter" or "ml"):
             inputAmount = inputAmount * 1
         
-        elif(inputUnits == 'kilogram'):
+        elif(inputUnits == 'kilogram' or "kg"):
             inputAmount = inputAmount * 1000
         
-        elif(inputUnits == 'gram'):
+        elif(inputUnits == 'gram' or "g"):
             inputAmount = inputAmount * 1
 
         return inputAmount
@@ -105,10 +99,10 @@ class Conversions:
     def getOutputUnitsImperial(self, madeSmall, outputUnits):
         unit = outputUnits
         
-        if (unit == "pound"):
+        if (unit == "pound" or "lbs" or "lb"):
             madeSmall = madeSmall * 16
         
-        elif (unit == "ounce"):
+        elif (unit == "ounce" or "oz"):
             madeSmall = madeSmall
         
         return madeSmall
@@ -116,16 +110,16 @@ class Conversions:
     def getOutputUnitsMetric(self, madeSmall, outputUnits):
         unit = outputUnits
 
-        if(unit == 'kilogram'):
+        if(unit == 'kilogram' or "kg"):
             madeSmall = madeSmall / 1000
 
-        elif(unit == 'gram'):
+        elif(unit == 'gram' or "g"):
             madeSmall = madeSmall
         
-        elif(unit == "liter"):
+        elif(unit == "liter" or "l"):
             madeSmall = madeSmall / 1000
 
-        elif(unit == 'mililiter'):
+        elif(unit == "milliliter" or "ml"):
             madeSmall = madeSmall
 
         return madeSmall
@@ -133,10 +127,10 @@ class Conversions:
     def getOutputUnitsSpoonsImperial(self, madeSmall, outputUnits):
         unit = outputUnits
 
-        if(unit == "teaspoon"):
+        if(unit == "teaspoon" or "tsp"):
             madeSmall = madeSmall * 6
 
-        elif(unit == "tablespoon"):
+        elif(unit == "tablespoon" or "tbsp"):
             madeSmall = madeSmall * 2
 
         return madeSmall
@@ -144,10 +138,10 @@ class Conversions:
     def getOutputUnitsSpoonsMetric(self, madeSmall, outputUnits):
         unit = outputUnits
         
-        if(unit == "teaspoon"):
+        if(unit == "teaspoon" or "tsp"):
             madeSmall = madeSmall * 0.202884
         
-        elif(unit == "tablespoon"):
+        elif(unit == "tablespoon" or "tbsp"):
             madeSmall = madeSmall * 0.067628
 
         return madeSmall
