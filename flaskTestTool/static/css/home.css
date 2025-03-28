@@ -1,0 +1,286 @@
+/* Base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Base Body Styles */
+body {
+    font-family: 'DM Sans', Arial, sans-serif;
+    line-height: 1.6;
+    background-color: white;
+}
+
+/* Navigation Bar Styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #8499B1;
+    color: white;
+    font-family: 'Playfair Display', 'serif';
+}
+
+/* Logo & Profile Icon Styles */
+.logo {
+    width: 40px;
+    height: 40px;
+    display: block;
+}
+
+.profile-icon {
+    width: 35px;
+    height: 35px;
+    display: block;
+}
+
+/* Logo Section Styles */
+.nav-brand-link {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    text-decoration: none;
+    color: white;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    font-family: 'Playfair Display', serif;
+}
+
+/* Nav Link Styles */
+.nav-links {
+    display: flex;
+    gap: 6rem;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+}
+
+/* Active Tab */
+.nav-links a.active {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+/* Profile Section Styles */
+.nav-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+}
+
+.profile-link {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    text-decoration: none;
+    color: white;
+}
+
+.profile-link:hover {
+    opacity: 0.8;
+}
+
+.nav-links a:hover, .nav-brand-link:hover {
+    opacity: 0.8;
+}
+
+:root {
+    --primary-color: #D3FAC7;
+    --secondary-color: #8499B1;
+    --accent-color: #EC9192;
+    --text-color: #333333;
+    --background-color: #FFFFFF;
+    --card-background: #F8F9FA;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'DM Sans', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Welcome Section */
+.welcome-section {
+    text-align: center;
+    padding: 4rem 0;
+    background: linear-gradient(135deg, var(--primary-color) 0%, #ffffff 100%);
+    border-radius: 1rem;
+    margin-bottom: 3rem;
+}
+
+.welcome-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 1rem;
+}
+
+.welcome-subtitle {
+    font-size: 1.5rem;
+    color: var(--secondary-color);
+    margin: 0;
+}
+
+/* Features Grid */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+.feature-card {
+    background-color: var(--card-background);
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.feature-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+}
+
+.feature-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.feature-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+.feature-card p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--secondary-color);
+    margin-bottom: 1.5rem;
+    flex-grow: 1;
+}
+
+.feature-button {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    background-color: var(--accent-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+    margin-top: auto;
+}
+
+.feature-button:hover {
+    background-color: #d67a7b;
+}
+
+/* CTA Section */
+.cta-section {
+    text-align: center;
+    padding: 2rem;
+    background-color: var(--card-background);
+    border-radius: 1rem;
+}
+
+.cta-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.cta-section p {
+    font-size: 1.2rem;
+    color: var(--secondary-color);
+    margin-bottom: 0;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.cta-button {
+    padding: 1rem 2rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.cta-button.primary {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.cta-button.secondary {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .welcome-title {
+        font-size: 2.5rem;
+    }
+
+    .welcome-subtitle {
+        font-size: 1.2rem;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .cta-buttons {
+        flex-direction: column;
+    }
+
+    .cta-button {
+        width: 100%;
+    }
+} 
