@@ -176,19 +176,29 @@ def profile():
 
 @apiSim.route('/recipeDisplay', methods=['GET'])
 def recipeDisplay():
-    recipes = Recipe.query.all()
-    
-    recipe_list = []
-    for recipe in recipes:
-        recipe_data = {
-            'dish': recipe.dish,
-            'ingredients': [{'size': ingredient.size, 'measure': ingredient.measure, 'ingredient': ingredient.ingredient} for ingredient in recipe.ingredients],
-            'instrucitons': [instruction.step for instruction in recipe.instructions]
-        }
-        recipe_list.append(recipe_data)
+    try:
+        # Get user_id from request headers or query parameters
+        user_id = request.headers.get('User-Id')
+        if not user_id:
+            return jsonify({'message': 'User ID is required'}), 401
+            
+        # Query recipes for specific user
+        recipes = Recipe.query.filter_by(user_id=user_id).all()
         
-    return jsonify(recipe_list)
-    # return render_template('recipeDisplay.html')
+        recipe_list = []
+        for recipe in recipes:
+            recipe_data = {
+                'id': recipe.id,
+                'dish': recipe.dish,
+                'ingredients': [{'size': ingredient.size, 'measure': ingredient.measure, 'ingredient': ingredient.ingredient} for ingredient in recipe.ingredients],
+                'instructions': [instruction.instruction for instruction in recipe.instructions]
+            }
+            recipe_list.append(recipe_data)
+            
+        return jsonify(recipe_list)
+    except Exception as e:
+        print(f"Error fetching recipes: {str(e)}")
+        return jsonify({'message': 'Error fetching recipes'}), 500
 
 @apiSim.route('/createRecipe')
 def create_recipe():
@@ -198,14 +208,40 @@ def create_recipe():
 @apiSim.route('/submitRecipe', methods=["POST"])
 def submit_recipe():
     try:
+        print("Received recipe submission request")
         recipe_data = request.get_json()
+        print("Recipe data received:", recipe_data)
+        
         if not recipe_data:
+            print("No recipe data provided")
             return jsonify({'message': 'No recipe data provided'}), 400
             
-        # Create new recipe
-        new_recipe = Recipe(dish=recipe_data['dish'])
+        # Get user_id from request headers or data
+        user_id = request.headers.get('User-Id') or recipe_data.get('user_id')
+        print("User ID:", user_id)
+        
+        if not user_id:
+            print("No user ID provided")
+            return jsonify({'message': 'User ID is required'}), 401
+            
+        # Verify user exists
+        user = newUser.query.get(user_id)
+        if not user:
+            print(f"User not found with ID: {user_id}")
+            return jsonify({'message': 'User not found'}), 404
+            
+        print(f"Found user: {user.firstName} {user.lastName}")
+            
+        # Create new recipe with user_id
+        new_recipe = Recipe(
+            dish=recipe_data['dish'],
+            user_id=user_id
+        )
+        print("Created new recipe object:", new_recipe.to_json())
+        
         db.session.add(new_recipe)
         db.session.flush()  # Get the recipe ID without committing
+        print(f"Recipe added to session with ID: {new_recipe.id}")
         
         # Add ingredients
         for ingredient_data in recipe_data['ingredients']:
@@ -216,6 +252,7 @@ def submit_recipe():
                 ingredient=ingredient_data['ingredient']
             )
             db.session.add(ingredient)
+            print(f"Added ingredient: {ingredient.to_json()}")
         
         # Add instructions
         for step in recipe_data['instructions']:
@@ -224,29 +261,50 @@ def submit_recipe():
                 instruction=step
             )
             db.session.add(instruction)
+            print(f"Added instruction: {instruction.to_json()}")
         
         # Commit changes
-        db.session.commit()
-        return jsonify({'message': 'Recipe saved successfully', 'recipe_id': new_recipe.id}), 201
+        try:
+            db.session.commit()
+            print("Successfully committed changes to database")
+            return jsonify({
+                'message': 'Recipe saved successfully', 
+                'recipe_id': new_recipe.id,
+                'recipe': new_recipe.to_json()
+            }), 201
+        except Exception as commit_error:
+            print(f"Error during commit: {str(commit_error)}")
+            db.session.rollback()
+            raise commit_error
         
     except Exception as e:
-        db.session.rollback()
         print(f"Error saving recipe: {str(e)}")
+        db.session.rollback()
         return jsonify({'message': f'Error saving recipe: {str(e)}'}), 500
 
 @apiSim.route('/getRecipes', methods=['GET'])
 def get_recipes():
-    recipes = Recipe.query.all()
-    recipe_list = []
-    for recipe in recipes:
-        recipe_data = {
-            'id': recipe.id,
-            'dish': recipe.dish,
-            'ingredients': [{'size': i.size, 'measure': i.measure, 'ingredient': i.ingredient} for i in recipe.ingredients],
-            'instructions': [j.step for j in recipe.instructions],
-        }
-        recipe_list.append(recipe_data)
-    return jsonify(recipe_list)
+    try:
+        # Get user_id from request headers or query parameters
+        user_id = request.headers.get('User-Id')
+        if not user_id:
+            return jsonify({'message': 'User ID is required'}), 401
+            
+        # Query recipes for specific user
+        recipes = Recipe.query.filter_by(user_id=user_id).all()
+        recipe_list = []
+        for recipe in recipes:
+            recipe_data = {
+                'id': recipe.id,
+                'dish': recipe.dish,
+                'ingredients': [{'size': i.size, 'measure': i.measure, 'ingredient': i.ingredient} for i in recipe.ingredients],
+                'instructions': [j.instruction for j in recipe.instructions],
+            }
+            recipe_list.append(recipe_data)
+        return jsonify(recipe_list)
+    except Exception as e:
+        print(f"Error fetching recipes: {str(e)}")
+        return jsonify({'message': 'Error fetching recipes'}), 500
 
 @apiSim.route('/editRecipe')
 def edit_recipe():
@@ -254,12 +312,27 @@ def edit_recipe():
 
 @apiSim.route('/deleteRecipe/<int:recipe_id>', methods=['DELETE'])
 def delete_recipe(recipe_id):
-    recipe = Recipe.query.get(recipe_id)
-    if recipe:
+    try:
+        # Get user_id from request headers
+        user_id = request.headers.get('User-Id')
+        if not user_id:
+            return jsonify({'message': 'User ID is required'}), 401
+            
+        # Find recipe and verify ownership
+        recipe = Recipe.query.get(recipe_id)
+        if not recipe:
+            return jsonify({"message": "Recipe not found"}), 404
+            
+        if recipe.user_id != int(user_id):
+            return jsonify({"message": "Unauthorized to delete this recipe"}), 403
+            
         db.session.delete(recipe)
         db.session.commit()
         return '', 204
-    return jsonify({"message": "Recipe not found"}), 404
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error deleting recipe: {str(e)}")
+        return jsonify({'message': 'Error deleting recipe'}), 500
 
 if __name__ == '__main__':
     with apiSim.app_context():
