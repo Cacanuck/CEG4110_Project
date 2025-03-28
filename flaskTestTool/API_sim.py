@@ -1,7 +1,7 @@
 from flask import *
 from flask_cors import CORS
 from config import db
-from models import Recipe, newUser, Ingredient, Instruction
+from models import Recipe, newUser, Ingredient, Instruction, ShoppingCart, CartItem
 import hashlib
 import sqlite3
 
@@ -333,6 +333,153 @@ def delete_recipe(recipe_id):
         db.session.rollback()
         print(f"Error deleting recipe: {str(e)}")
         return jsonify({'message': 'Error deleting recipe'}), 500
+
+@apiSim.route('/api/carts', methods=['GET'])
+def get_user_carts():
+    try:
+        # Get user_id from request headers
+        user_id = request.headers.get('User-Id')
+        if not user_id:
+            return jsonify({'message': 'User ID is required'}), 401
+            
+        # Query carts for specific user
+        carts = ShoppingCart.query.filter_by(user_id=user_id).all()
+        return jsonify([cart.to_json() for cart in carts])
+    except Exception as e:
+        print(f"Error fetching carts: {str(e)}")
+        return jsonify({'message': 'Error fetching carts'}), 500
+
+@apiSim.route('/api/carts', methods=['POST'])
+def create_cart():
+    try:
+        # Get user_id from request headers
+        user_id = request.headers.get('User-Id')
+        if not user_id:
+            return jsonify({'message': 'User ID is required'}), 401
+            
+        # Get cart data from request body
+        data = request.get_json()
+        if not data:
+            return jsonify({'message': 'No data provided'}), 400
+            
+        # Create new cart
+        new_cart = ShoppingCart(
+            user_id=user_id,
+            title=data['title']
+        )
+        
+        # Add items to cart
+        for item_data in data['items']:
+            cart_item = CartItem(
+                name=item_data['name'],
+                quantity=item_data['quantity'],
+                unit=item_data['unit'],
+                category=item_data['category']
+            )
+            new_cart.items.append(cart_item)
+        
+        db.session.add(new_cart)
+        db.session.commit()
+        
+        return jsonify(new_cart.to_json()), 201
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error creating cart: {str(e)}")
+        return jsonify({'message': 'Error creating cart'}), 500
+
+@apiSim.route('/api/carts/<int:cart_id>', methods=['PUT'])
+def update_cart(cart_id):
+    try:
+        # Get user_id from request headers
+        user_id = request.headers.get('User-Id')
+        if not user_id:
+            return jsonify({'message': 'User ID is required'}), 401
+            
+        # Find cart and verify ownership
+        cart = ShoppingCart.query.get(cart_id)
+        if not cart:
+            return jsonify({'message': 'Cart not found'}), 404
+            
+        if cart.user_id != int(user_id):
+            return jsonify({'message': 'Unauthorized to update this cart'}), 403
+            
+        # Get updated data
+        data = request.get_json()
+        if not data:
+            return jsonify({'message': 'No data provided'}), 400
+            
+        # Update cart title
+        cart.title = data['title']
+        
+        # Clear existing items
+        CartItem.query.filter_by(cart_id=cart_id).delete()
+        
+        # Add new items
+        for item_data in data['items']:
+            cart_item = CartItem(
+                cart_id=cart_id,
+                name=item_data['name'],
+                quantity=item_data['quantity'],
+                unit=item_data['unit'],
+                category=item_data['category']
+            )
+            db.session.add(cart_item)
+        
+        db.session.commit()
+        return jsonify(cart.to_json())
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error updating cart: {str(e)}")
+        return jsonify({'message': 'Error updating cart'}), 500
+
+@apiSim.route('/api/carts/<int:cart_id>', methods=['DELETE'])
+def delete_cart(cart_id):
+    try:
+        # Get user_id from request headers
+        user_id = request.headers.get('User-Id')
+        if not user_id:
+            return jsonify({'message': 'User ID is required'}), 401
+            
+        # Find cart and verify ownership
+        cart = ShoppingCart.query.get(cart_id)
+        if not cart:
+            return jsonify({'message': 'Cart not found'}), 404
+            
+        if cart.user_id != int(user_id):
+            return jsonify({'message': 'Unauthorized to delete this cart'}), 403
+            
+        # Delete all cart items first
+        CartItem.query.filter_by(cart_id=cart_id).delete()
+        
+        # Then delete the cart
+        db.session.delete(cart)
+        db.session.commit()
+        return '', 204
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error deleting cart: {str(e)}")
+        return jsonify({'message': 'Error deleting cart'}), 500
+
+@apiSim.route('/api/carts/<int:cart_id>', methods=['GET'])
+def get_cart(cart_id):
+    try:
+        # Get user_id from request headers
+        user_id = request.headers.get('User-Id')
+        if not user_id:
+            return jsonify({'message': 'User ID is required'}), 401
+            
+        # Find cart and verify ownership
+        cart = ShoppingCart.query.get(cart_id)
+        if not cart:
+            return jsonify({'message': 'Cart not found'}), 404
+            
+        if cart.user_id != int(user_id):
+            return jsonify({'message': 'Unauthorized to view this cart'}), 403
+            
+        return jsonify(cart.to_json())
+    except Exception as e:
+        print(f"Error fetching cart: {str(e)}")
+        return jsonify({'message': 'Error fetching cart'}), 500
 
 if __name__ == '__main__':
     with apiSim.app_context():

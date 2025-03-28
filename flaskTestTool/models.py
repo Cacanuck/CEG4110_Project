@@ -86,3 +86,45 @@ class pantry(db.Model):
             "amount": self.amount,
             "units": self.units
         }
+
+class ShoppingCart(db.Model):
+    __tablename__ = 'shopping_cart'
+    
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('new_user.id'), nullable=False)
+    title = db.Column(db.String(100), nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False, default=db.func.current_timestamp())
+    updated_at = db.Column(db.DateTime, nullable=False, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
+    items = db.relationship('CartItem', back_populates='cart', lazy='subquery')
+    user = db.relationship('newUser', backref=db.backref('shopping_carts', lazy=True))
+    
+    def to_json(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "title": self.title,
+            "created_at": self.created_at.isoformat(),
+            "updated_at": self.updated_at.isoformat(),
+            "items": [item.to_json() for item in self.items]
+        }
+
+class CartItem(db.Model):
+    __tablename__ = 'cart_item'
+    
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    cart_id = db.Column(db.Integer, db.ForeignKey('shopping_cart.id'), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+    unit = db.Column(db.String(50), nullable=False)
+    category = db.Column(db.String(50), nullable=False)
+    
+    cart = db.relationship('ShoppingCart', back_populates='items')
+    
+    def to_json(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "quantity": self.quantity,
+            "unit": self.unit,
+            "category": self.category
+        }
