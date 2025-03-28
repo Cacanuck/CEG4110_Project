@@ -181,42 +181,91 @@ function updateInstructionDeleteButtons() {
 function submitForm(event) {
   event.preventDefault();
 
+  // Get user data from session storage
+  const userData = JSON.parse(sessionStorage.getItem('userData'));
+  if (!userData || !userData.id) {
+    console.error('No user logged in');
+    alert('Please log in to create a recipe');
+    window.location.href = '/index';
+    return;
+  }
+
   var recipeData = {
     dish: "",
     ingredients: [],
     instructions: [],
+    user_id: userData.id  // Add user_id to the recipe data
   };
 
   var dishInput = document.querySelector(".dishForm input[name='dish']");
+  if (!dishInput.value.trim()) {
+    alert('Please enter a dish name');
+    return;
+  }
   recipeData.dish = dishInput.value;
 
-  document.querySelectorAll(".ingredientForm").forEach((form) => {
+  // Collect ingredients
+  var ingredientForms = document.querySelectorAll(".ingredientForm");
+  if (ingredientForms.length === 0) {
+    alert('Please add at least one ingredient');
+    return;
+  }
+  ingredientForms.forEach((form) => {
     var size = form.querySelector("input[name='size']").value;
     var measure = form.querySelector("input[name='measure']").value;
     var ingredient = form.querySelector("input[name='ingredient']").value;
-    recipeData.ingredients.push({ size, measure, ingredient });
+    if (!size || !measure || !ingredient) {
+      alert('Please fill in all ingredient fields');
+      return;
+    }
+    recipeData.ingredients.push({ 
+      size: parseFloat(size), 
+      measure: measure.trim(), 
+      ingredient: ingredient.trim() 
+    });
   });
 
-  document.querySelectorAll(".instructionForm").forEach((form) => {
+  // Collect instructions
+  var instructionForms = document.querySelectorAll(".instructionForm");
+  if (instructionForms.length === 0) {
+    alert('Please add at least one instruction step');
+    return;
+  }
+  instructionForms.forEach((form) => {
     var step = form.querySelector("input[name='step']").value;
-    recipeData.instructions.push(step);
+    if (!step.trim()) {
+      alert('Please fill in all instruction steps');
+      return;
+    }
+    recipeData.instructions.push(step.trim());
   });
 
+  // Send the recipe data to the server
   fetch("/submitRecipe", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "User-Id": userData.id  // Add user ID to headers as well
     },
     body: JSON.stringify(recipeData),
   })
-  .then(response => response.json())
+  .then(response => {
+    if (!response.ok) {
+      return response.json().then(data => {
+        throw new Error(data.message || 'Failed to save recipe');
+      });
+    }
+    return response.json();
+  })
   .then(data => {
-    console.log("Recipe saved:", data);
+    console.log("Recipe saved successfully:", data);
+    alert('Recipe saved successfully!');
     window.location.href = "/recipeDisplay";
   })
   .catch(error => {
-    console.log("Error saving recipe: ", error)
-  })
+    console.error("Error saving recipe:", error);
+    alert('Error saving recipe: ' + error.message);
+  });
 }
 
 document.addEventListener("keydown", function (event) {
