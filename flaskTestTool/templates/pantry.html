@@ -78,7 +78,7 @@
 
       <!-- Nav Links -->
       <div class="nav-links">
-        <a href="/index">Home</a>
+        <a href="/home">Home</a>
         <a href="/recipeDisplay">Recipes</a>
         <a href="/pantry" class="active">Pantry</a>
         <a href="/shoppingCart">Carts</a>
@@ -144,6 +144,18 @@
     </main>
 
     <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Check if user is logged in
+        const userData = JSON.parse(sessionStorage.getItem('userData'));
+        if (!userData) {
+          // If not logged in, redirect to login page
+          window.location.href = '/index';
+          return;
+        }
+        
+        // If logged in, initialize pantry functionality
+        initListPantry();
+      });
       function initListPantry() {
         //setting up js variables
         const outputArea = document.getElementById("outputPantry");
