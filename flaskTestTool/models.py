@@ -6,8 +6,8 @@ class Recipe(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     dish = db.Column(db.String(100), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('new_user.id'), nullable=False)
-    ingredients = db.relationship('Ingredient', back_populates='recipe', lazy='subquery')
-    instructions = db.relationship('Instruction', back_populates='recipe', lazy='subquery')
+    ingredients = db.relationship('Ingredient', back_populates='recipe', cascade="all, delete", passive_deletes=True, lazy='subquery')
+    instructions = db.relationship('Instruction', back_populates='recipe', cascade="all, delete", passive_deletes=True, lazy='subquery')
     user = db.relationship('newUser', backref=db.backref('recipes', lazy=True))
     
     def to_json(self):
@@ -23,7 +23,7 @@ class Ingredient(db.Model):
     __tablename__ = 'ingredient'
     
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'), nullable=False)
+    recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id', ondelete='CASCADE'), nullable=False)
     size = db.Column(db.Integer, nullable=False)
     measure = db.Column(db.String, nullable=False)
     ingredient = db.Column(db.String(100), nullable=False)
@@ -42,7 +42,7 @@ class Instruction(db.Model):
     __tablename__ = 'instruction'
     
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'), nullable=False)
+    recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id', ondelete='CASCADE'), nullable=False)
     instruction = db.Column(db.String(200), nullable=False)
     
     recipe = db.relationship('Recipe', back_populates='instructions')

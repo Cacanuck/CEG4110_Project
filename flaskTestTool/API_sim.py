@@ -174,35 +174,12 @@ def profile():
         print(f"Profile route error: {str(e)}")
         return redirect(url_for('index'))
 
-@apiSim.route('/recipeDisplay', methods=['GET'])
-def recipeDisplay():
-    try:
-        # Get user_id from request headers or query parameters
-        user_id = request.headers.get('User-Id')
-        if not user_id:
-            return jsonify({'message': 'User ID is required'}), 401
-            
-        # Query recipes for specific user
-        recipes = Recipe.query.filter_by(user_id=user_id).all()
-        
-        recipe_list = []
-        for recipe in recipes:
-            recipe_data = {
-                'id': recipe.id,
-                'dish': recipe.dish,
-                'ingredients': [{'size': ingredient.size, 'measure': ingredient.measure, 'ingredient': ingredient.ingredient} for ingredient in recipe.ingredients],
-                'instructions': [instruction.instruction for instruction in recipe.instructions]
-            }
-            recipe_list.append(recipe_data)
-            
-        return jsonify(recipe_list)
-    except Exception as e:
-        print(f"Error fetching recipes: {str(e)}")
-        return jsonify({'message': 'Error fetching recipes'}), 500
+@apiSim.route('/recipeDisplay')
+def recipe_display():
+    return render_template('recipeDisplay.html')
 
 @apiSim.route('/createRecipe')
 def create_recipe():
-    
     return render_template('createRecipe.html')
 
 @apiSim.route('/submitRecipe', methods=["POST"])
@@ -255,12 +232,14 @@ def submit_recipe():
             print(f"Added ingredient: {ingredient.to_json()}")
         
         # Add instructions
+        instructions = []
         for step in recipe_data['instructions']:
             instruction = Instruction(
                 recipe_id=new_recipe.id,
                 instruction=step
             )
             db.session.add(instruction)
+            instructions.append(instruction.instruction)
             print(f"Added instruction: {instruction.to_json()}")
         
         # Commit changes
@@ -270,7 +249,10 @@ def submit_recipe():
             return jsonify({
                 'message': 'Recipe saved successfully', 
                 'recipe_id': new_recipe.id,
-                'recipe': new_recipe.to_json()
+                'recipe': {
+                    'dish': new_recipe.dish,
+                    'ingredients': recipe_data['ingredients'],
+                    'instructions': instructions}
             }), 201
         except Exception as commit_error:
             print(f"Error during commit: {str(commit_error)}")
@@ -285,23 +267,12 @@ def submit_recipe():
 @apiSim.route('/getRecipes', methods=['GET'])
 def get_recipes():
     try:
-        # Get user_id from request headers or query parameters
         user_id = request.headers.get('User-Id')
         if not user_id:
             return jsonify({'message': 'User ID is required'}), 401
             
-        # Query recipes for specific user
         recipes = Recipe.query.filter_by(user_id=user_id).all()
-        recipe_list = []
-        for recipe in recipes:
-            recipe_data = {
-                'id': recipe.id,
-                'dish': recipe.dish,
-                'ingredients': [{'size': i.size, 'measure': i.measure, 'ingredient': i.ingredient} for i in recipe.ingredients],
-                'instructions': [j.instruction for j in recipe.instructions],
-            }
-            recipe_list.append(recipe_data)
-        return jsonify(recipe_list)
+        return jsonify([recipe.to_json() for recipe in recipes])
     except Exception as e:
         print(f"Error fetching recipes: {str(e)}")
         return jsonify({'message': 'Error fetching recipes'}), 500
@@ -319,7 +290,7 @@ def delete_recipe(recipe_id):
             return jsonify({'message': 'User ID is required'}), 401
             
         # Find recipe and verify ownership
-        recipe = Recipe.query.get(recipe_id)
+        recipe = db.session.get(Recipe, recipe_id)
         if not recipe:
             return jsonify({"message": "Recipe not found"}), 404
             
