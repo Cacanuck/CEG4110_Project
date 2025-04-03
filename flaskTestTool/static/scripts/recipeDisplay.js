@@ -50,7 +50,7 @@ async function deleteRecipe(recipeId) {
 
 function createNav() {
   var navLinks = [
-    { text: "Home", href: "index" },
+    { text: "Home", href: "home" },
     { text: "Recipes", href: "recipeDisplay" },
     { text: "Pantry", href: "pantry" },
     { text: "Carts", href: "shoppingCart" },
