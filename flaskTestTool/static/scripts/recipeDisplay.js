@@ -169,13 +169,13 @@ function addRecipe(recipe) {
     recipe.instructions || "No Instructions Listed";
   var expansionPanel = createExpansionPanel(
     Array.isArray(recipe.instructions)
-      ? recipe.instructions
+      ? recipe.instructions.map(step => step.instruction)
       : [recipe.instructions]
   );
   recipeDiv.appendChild(expansionPanel);
   var buttonContainer = document.createElement("div");
   buttonContainer.classList.add("button-container");
-  var editButton = editRecipeButton(recipe.dish);
+  var editButton = editRecipeButton(recipe.id);
   var deleteButton = deleteRecipeButton(recipe.id, recipeDiv);
   buttonContainer.appendChild(editButton);
   buttonContainer.appendChild(deleteButton);
