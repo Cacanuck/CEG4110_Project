@@ -185,40 +185,30 @@ def create_recipe():
 @apiSim.route('/submitRecipe', methods=["POST"])
 def submit_recipe():
     try:
-        print("Received recipe submission request")
         recipe_data = request.get_json()
-        print("Recipe data received:", recipe_data)
         
         if not recipe_data:
-            print("No recipe data provided")
             return jsonify({'message': 'No recipe data provided'}), 400
             
         # Get user_id from request headers or data
         user_id = request.headers.get('User-Id') or recipe_data.get('user_id')
-        print("User ID:", user_id)
         
         if not user_id:
-            print("No user ID provided")
             return jsonify({'message': 'User ID is required'}), 401
             
         # Verify user exists
         user = newUser.query.get(user_id)
         if not user:
-            print(f"User not found with ID: {user_id}")
             return jsonify({'message': 'User not found'}), 404
-            
-        print(f"Found user: {user.firstName} {user.lastName}")
             
         # Create new recipe with user_id
         new_recipe = Recipe(
             dish=recipe_data['dish'],
             user_id=user_id
         )
-        print("Created new recipe object:", new_recipe.to_json())
         
         db.session.add(new_recipe)
         db.session.flush()  # Get the recipe ID without committing
-        print(f"Recipe added to session with ID: {new_recipe.id}")
         
         # Add ingredients
         for ingredient_data in recipe_data['ingredients']:
@@ -229,7 +219,6 @@ def submit_recipe():
                 ingredient=ingredient_data['ingredient']
             )
             db.session.add(ingredient)
-            print(f"Added ingredient: {ingredient.to_json()}")
         
         # Add instructions
         instructions = []
@@ -240,12 +229,10 @@ def submit_recipe():
             )
             db.session.add(instruction)
             instructions.append(instruction.instruction)
-            print(f"Added instruction: {instruction.to_json()}")
         
         # Commit changes
         try:
             db.session.commit()
-            print("Successfully committed changes to database")
             return jsonify({
                 'message': 'Recipe saved successfully', 
                 'recipe_id': new_recipe.id,
@@ -278,7 +265,7 @@ def get_recipes():
         return jsonify({'message': 'Error fetching recipes'}), 500
 
 @apiSim.route('/editRecipe')
-def edit_recipe():
+def edit_recipe_page():
     return render_template('editRecipe.html')
 
 @apiSim.route('/deleteRecipe/<int:recipe_id>', methods=['DELETE'])
@@ -304,6 +291,91 @@ def delete_recipe(recipe_id):
         db.session.rollback()
         print(f"Error deleting recipe: {str(e)}")
         return jsonify({'message': 'Error deleting recipe'}), 500
+    
+@apiSim.route('/editRecipe/<int:recipe_id>', methods=['GET'])
+def load_edit_recipe_(recipe_id):
+    try:
+        user_id = request.headers.get('User-Id')
+        if not user_id:
+            return jsonify({'message': 'User ID is required'}), 401
+        
+        recipe = db.session.get(Recipe, recipe_id)
+        if not recipe:
+            return jsonify({'message': 'Recipe not found'}), 404
+        
+        if recipe.user_id != int(user_id):
+            return jsonify({'message': 'Unauthorized to view this recipe'}), 403
+
+        return jsonify(recipe.to_json())
+    except Exception as e:
+        print(f"Error fetching recipe: {str(e)}")
+        return jsonify({'message': 'Error fetching recipe'}), 500
+    
+@apiSim.route('/updateRecipe/<int:recipe_id>', methods=["PUT"])
+def update_recipe(recipe_id):
+    try:
+        recipe_data = request.get_json()
+        
+        if not recipe_data:
+            return jsonify({'message': 'No recipe data provided'}), 400
+            
+        # Get user_id from request headers or data
+        user_id = request.headers.get('User-Id') or recipe_data.get('user_id')
+        
+        if not user_id:
+            return jsonify({'message': 'User ID is required'}), 401
+            
+        # Verify user exists
+        user = newUser.query.get(user_id)
+        if not user:
+            return jsonify({'message': 'User not found'}), 404
+            
+        recipe = Recipe.query.get(recipe_id)
+        if not recipe:
+            return jsonify({'message': 'Recipe not found'}), 404
+        
+        recipe.dish = recipe_data.get('dish', recipe.dish)
+        Ingredient.query.filter_by(recipe_id=recipe.id).delete()
+        Instruction.query.filter_by(recipe_id=recipe.id).delete()
+        
+        # Add ingredients
+        for ingredient_data in recipe_data.get('ingredients', []):
+            ingredient = Ingredient(
+                recipe_id=recipe.id,
+                size=ingredient_data['size'],
+                measure=ingredient_data['measure'],
+                ingredient=ingredient_data['ingredient']
+            )
+            db.session.add(ingredient)
+        
+        # Add instructions
+        for step in recipe_data.get('instructions', []):
+            instruction = Instruction(
+                recipe_id=recipe.id,
+                instruction=step
+            )
+            db.session.add(instruction)
+        
+        # Commit changes
+        try:
+            db.session.commit()
+            return jsonify({
+                'message': 'Recipe saved successfully', 
+                'recipe_id': recipe.id,
+                'recipe': {
+                    'dish': recipe.dish,
+                    'ingredients': recipe_data['ingredients'],
+                    'instructions': recipe_data['instructions']}
+            }), 201
+        except Exception as commit_error:
+            print(f"Error during commit: {str(commit_error)}")
+            db.session.rollback()
+            raise commit_error
+        
+    except Exception as e:
+        print(f"Error saving recipe: {str(e)}")
+        db.session.rollback()
+        return jsonify({'message': f'Error saving recipe: {str(e)}'}), 500
 
 @apiSim.route('/api/carts', methods=['GET'])
 def get_user_carts():

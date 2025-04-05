@@ -39,9 +39,9 @@ async function deleteRecipe(recipeId) {
       throw new Error("Failed to delete recipe");
     }
 
-    const recipeElement = document.getElementById(`${recipeId}`);
-    if (recipeElement) {
-      recipeElement.remove();
+    var recipeDiv = document.getElementById(recipeId);
+    if (recipeDiv) {
+      recipeDiv.remove();
     }
   } catch (error) {
     console.error("Error deleting recipe:", error);
@@ -122,17 +122,12 @@ function createRecipeButton() {
   document.querySelector("section").appendChild(button);
 }
 
-function editRecipeButton(recipeName) {
+function editRecipeButton(recipeId) {
   var button = document.createElement("button");
   button.textContent = "Edit";
   button.classList.add("editButton");
-  button.addEventListener("click", function () {
-    var recipes = JSON.parse(localStorage.getItem("recipes")) || [];
-    var recipeEdit = recipes.find((r) => r.dish === recipeName);
-    if (recipeEdit) {
-      localStorage.setItem("editRecipe", JSON.stringify(recipeEdit));
-      window.location.href = "editRecipe";
-    }
+  button.addEventListener("click", async function () {
+    window.location.href = `editRecipe?id=${recipeId}`;
   });
   return button;
 }
@@ -150,6 +145,7 @@ function deleteRecipeButton(recipeId) {
 function addRecipe(recipe) {
   var recipeDiv = document.createElement("div");
   recipeDiv.classList.add("recipe");
+  recipeDiv.id = recipe.id;
   var recipeText = document.createElement("span");
   recipeText.classList.add("recipeSpan");
   recipeText.textContent = recipe.dish || "Unnamed Recipe";
@@ -169,14 +165,14 @@ function addRecipe(recipe) {
     recipe.instructions || "No Instructions Listed";
   var expansionPanel = createExpansionPanel(
     Array.isArray(recipe.instructions)
-      ? recipe.instructions.map(step => step.instruction)
+      ? recipe.instructions.map((step) => step.instruction)
       : [recipe.instructions]
   );
   recipeDiv.appendChild(expansionPanel);
   var buttonContainer = document.createElement("div");
   buttonContainer.classList.add("button-container");
   var editButton = editRecipeButton(recipe.id);
-  var deleteButton = deleteRecipeButton(recipe.id, recipeDiv);
+  var deleteButton = deleteRecipeButton(recipe.id);
   buttonContainer.appendChild(editButton);
   buttonContainer.appendChild(deleteButton);
   recipeDiv.appendChild(buttonContainer);

@@ -1,16 +1,6 @@
 var stepNum = 0;
-var storedRecipe = localStorage.getItem("editRecipe");
-var editRecipe = null;
 
-try {
-  if (storedRecipe) {
-    editRecipe = JSON.parse(storedRecipe);
-  }
-} catch (error) {
-  console.log("Error with getting editRecipe from localStorage", error);
-}
-
-function createDishForm(edit = null) {
+function createDishForm() {
   var main = document.querySelector("main");
   var form = document.createElement("form");
   form.setAttribute("method", "post");
@@ -25,14 +15,11 @@ function createDishForm(edit = null) {
   dishInput.setAttribute("type", "text");
   dishInput.setAttribute("name", "dish");
   dishInput.classList.add("Dish", "input");
-  if (edit) {
-    dishInput.value = edit.dish;
-  }
   form.appendChild(dishInput);
   main.appendChild(form);
 }
 
-function createIngredientForm(edit = null) {
+function createIngredientForm() {
   var section = document.querySelector("section");
   var form = document.createElement("form");
   form.setAttribute("method", "post");
@@ -65,15 +52,6 @@ function createIngredientForm(edit = null) {
   ingredientInput.setAttribute("name", "ingredient");
   ingredientInput.classList.add("Ingredient", "input");
   form.appendChild(ingredientInput);
-
-  if (edit) {
-    var index = document.querySelectorAll(".ingredientForm").length;
-    if (edit.ingredients[index]) {
-      sizeInput.value = edit.ingredients[index].size;
-      measureInput.value = edit.ingredients[index].measure;
-      ingredientInput.value = edit.ingredients[index].ingredient;
-    }
-  }
 
   var lastForm = document.querySelector(".ingredientForm:last-of-type");
   if (lastForm) {
@@ -118,8 +96,8 @@ function updateIngredientDeleteButtons() {
   });
 }
 
-function createInstructionsForm(edit = null) {
-  var div = document.querySelector("div");
+function createInstructionsForm() {
+  var div = document.querySelector(".instructionDiv");
   var form = document.createElement("form");
   form.setAttribute("method", "post");
   form.setAttribute("action", "/submit");
@@ -170,14 +148,10 @@ function createInstructionsForm(edit = null) {
   form.append(instructionButton);
   form.append(deleteInstructionButton);
 
-  if (edit && edit.instructions.length >= stepNum) {
-    stepInput.value = edit.instructions[stepNum - 1];
-  }
-
   if (!document.querySelector("#submitButton")) {
     var submitButton = document.createElement("button");
     submitButton.setAttribute("id", "submitButton");
-    submitButton.textContent = "Save Changes";
+    submitButton.textContent = "Create Recipe";
     submitButton.addEventListener("click", function (event) {
       submitForm(event);
       window.location.href = "recipeDisplay";
@@ -207,43 +181,155 @@ function updateInstructionDeleteButtons() {
 function submitForm(event) {
   event.preventDefault();
 
+  // Get user data from session storage
+  const userData = JSON.parse(sessionStorage.getItem("userData"));
+  if (!userData || !userData.id) {
+    console.error("No user logged in");
+    alert("Please log in to create a recipe");
+    window.location.href = "/index";
+    return;
+  }
+
+  const param = new URLSearchParams(window.location.search);
+  const recipeId = param.get("id");
+
+  if (!recipeId) {
+    alert("Recipe ID not found");
+    return;
+  }
+
   var recipeData = {
-    id: editRecipe?.id || Date.now(),
     dish: "",
     ingredients: [],
     instructions: [],
+    user_id: userData.id, // Add user_id to the recipe data
   };
 
   var dishInput = document.querySelector(".dishForm input[name='dish']");
+  if (!dishInput.value.trim()) {
+    alert("Please enter a dish name");
+    return;
+  }
   recipeData.dish = dishInput.value;
 
-  document.querySelectorAll(".ingredientForm").forEach((form) => {
+  // Collect ingredients
+  var ingredientForms = document.querySelectorAll(".ingredientForm");
+  if (ingredientForms.length === 0) {
+    alert("Please add at least one ingredient");
+    return;
+  }
+  ingredientForms.forEach((form) => {
     var size = form.querySelector("input[name='size']").value;
     var measure = form.querySelector("input[name='measure']").value;
     var ingredient = form.querySelector("input[name='ingredient']").value;
-    recipeData.ingredients.push({ size, measure, ingredient });
-  });
-
-  document.querySelectorAll(".instructionForm").forEach((form) => {
-    var step = form.querySelector("input[name='step']").value;
-    recipeData.instructions.push(step);
-  });
-
-  var recipes = JSON.parse(localStorage.getItem("recipes")) || [];
-  if (editRecipe) {
-    var index = recipes.findIndex((recipe) => recipe.id === editRecipe.id);
-    if (index !== -1) {
-      recipes[index] = recipeData;
-    } else {
-      recipes.push(recipeData);
+    if (!size || !measure || !ingredient) {
+      alert("Please fill in all ingredient fields");
+      return;
     }
-  } else {
-    recipes.push(recipeData);
-  }
+    recipeData.ingredients.push({
+      size: parseFloat(size),
+      measure: measure.trim(),
+      ingredient: ingredient.trim(),
+    });
+  });
 
-  localStorage.setItem("recipes", JSON.stringify(recipes));
-  localStorage.removeItem("editRecipe");
-  window.location.href = "recipeDisplay";
+  // Collect instructions
+  var instructionForms = document.querySelectorAll(".instructionForm");
+  if (instructionForms.length === 0) {
+    alert("Please add at least one instruction step");
+    return;
+  }
+  instructionForms.forEach((form) => {
+    var step = form.querySelector("input[name='step']").value;
+    if (!step.trim()) {
+      alert("Please fill in all instruction steps");
+      return;
+    }
+    recipeData.instructions.push(step.trim());
+  });
+
+  // Send the recipe data to the server
+  fetch(`/updateRecipe/${recipeId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "User-Id": userData.id, // Add user ID to headers as well
+    },
+    body: JSON.stringify(recipeData),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        return response.json().then((data) => {
+          throw new Error(data.message || "Failed to save recipe");
+        });
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log("Recipe saved successfully:", data);
+      alert("Recipe saved successfully!");
+      window.location.href = "/recipeDisplay";
+    })
+    .catch((error) => {
+      console.error("Error saving recipe:", error);
+      alert("Error saving recipe: " + error.message);
+    });
+}
+
+async function loadRecipe() {
+  const param = new URLSearchParams(window.location.search);
+  const recipeId = param.get("id");
+
+  try {
+    const userData = JSON.parse(sessionStorage.getItem("userData"));
+    if (!userData || !userData.id) {
+      alert("Please log in to edit this recipe");
+      window.location.href = "/index";
+      return;
+    }
+
+    const response = await fetch(`/editRecipe/${recipeId}`, {
+      method: "GET",
+      headers: {
+        "User-Id": userData.id,
+      },
+    });
+    if (!response.ok) {
+      return response.json().then((data) => {
+        throw new Error(data.message || "Failed to save recipe");
+      });
+    }
+    const recipeData = await response.json();
+
+    document.querySelector(".dishForm input[name='dish']").value =
+      recipeData.dish;
+
+    recipeData.ingredients.forEach((ing) => {
+      const input = createIngredientForm();
+      const form = input.closest("form");
+      form.querySelector("input[name='size']").value = ing.size;
+      form.querySelector("input[name='measure']").value = ing.measure;
+      form.querySelector("input[name='ingredient']").value = ing.ingredient;
+    });
+    recipeData.instructions.forEach((stepObj) => {
+      let stepText = "";
+
+      if (typeof stepObj === "string") {
+        stepText = stepObj;
+      } else if (stepObj && typeof stepObj.instruction === "string") {
+        stepText = stepObj.instruction;
+      } else {
+        console.warn("Unexpected instruction format:", stepObj);
+        return;
+      }
+
+      let stepInput = createInstructionsForm();
+      stepInput.value = stepText;
+    });
+  } catch (error) {
+    console.error("Error loading recipe", error);
+    alert("Could not load recipe");
+  }
 }
 
 document.addEventListener("keydown", function (event) {
@@ -339,19 +425,9 @@ function populateHeading(headingText, locationTag) {
 
 document.addEventListener("DOMContentLoaded", function () {
   populateHeading("Name of Dish", "main");
-  createDishForm(editRecipe);
+  createDishForm();
   populateHeading("Ingredients", "section");
-  if (editRecipe && editRecipe.ingredients.length > 0) {
-    editRecipe.ingredients.forEach(() => createIngredientForm(editRecipe));
-  } else {
-    createIngredientForm();
-  }
   populateHeading("Instructions", "div");
-  if (editRecipe && editRecipe.instructions.length > 0) {
-    editRecipe.instructions.forEach(() => createInstructionsForm(editRecipe));
-  } else {
-    createInstructionsForm();
-  }
+  loadRecipe();
   createNav();
-  localStorage.removeItem("editRecipe");
 });
