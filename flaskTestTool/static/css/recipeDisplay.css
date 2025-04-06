@@ -81,10 +81,9 @@ body {
 }
 .recipe {
   display: grid;
-  grid-template-columns: 1fr 2.5fr 3fr .5fr;
+  grid-template-columns: 1fr 0.5fr 2.5fr 3fr 0.5fr;
   grid-template-rows: 1fr;
-  grid-template-areas: 
-    "span" "ul" "expansionDiv" "button-container";
+  grid-template-areas: "recipeSpan" "allergenDiv" "ul" "expansionDiv" "button-container";
   justify-content: space-between;
   align-items: center;
   background: white;
@@ -92,7 +91,7 @@ body {
   margin: 5px 0;
   border-radius: 5px;
   border: none;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 #recipeList {
   gap: 10px;
@@ -168,4 +167,19 @@ ul {
   cursor: pointer;
   font-weight: 500;
   padding-right: 5px;
+}
+.allergen {
+  display: block;
+  background-color: rgb(200, 106, 6);
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 3px;
+  min-width: 150px;
+  text-align: center;
+  margin-right: 10px;
+}
+.recipe .allergen:empty {
+  background-color: transparent;
+  color: transparent;
 }

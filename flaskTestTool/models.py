@@ -9,6 +9,7 @@ class Recipe(db.Model):
     ingredients = db.relationship('Ingredient', back_populates='recipe', cascade="all, delete", passive_deletes=True, lazy='subquery')
     instructions = db.relationship('Instruction', back_populates='recipe', cascade="all, delete", passive_deletes=True, lazy='subquery')
     user = db.relationship('newUser', backref=db.backref('recipes', lazy=True))
+    allergen = db.Column(db.Integer, default=0, nullable=True)
     
     def to_json(self):
         return {
@@ -17,6 +18,7 @@ class Recipe(db.Model):
             "user_id": self.user_id,
             "ingredients": [ingredient.to_json() for ingredient in self.ingredients],
             "instructions": [instruction.to_json() for instruction in self.instructions],
+            "allergen": self.allergen,
         }
     
 class Ingredient(db.Model):

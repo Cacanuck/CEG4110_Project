@@ -16,6 +16,22 @@ function createDishForm() {
   dishInput.setAttribute("name", "dish");
   dishInput.classList.add("Dish", "input");
   form.appendChild(dishInput);
+  var allergenDiv = document.createElement("div");
+  allergenDiv.classList.add("allergenDiv");
+  var allergenLabel = document.createElement("label");
+  allergenLabel.textContent = "Contains Allergens: ";
+  allergenDiv.appendChild(allergenLabel);
+  var allergenInput = document.createElement("input");
+  allergenInput.setAttribute("type", "checkbox");
+  allergenInput.setAttribute("name", "allergen");
+  allergenInput.setAttribute("id", "allergen");
+  var allergenText = document.createElement("p");
+  allergenText.classList.add("allergenText");
+  allergenText.textContent =
+    "Known Allergens include: Milk, Eggs, Fish, Shellfish, Tree nuts, Peanuts, Wheat, Soybeans, and Sesame.";
+  allergenDiv.appendChild(allergenInput);
+  allergenDiv.appendChild(allergenText);
+  form.appendChild(allergenDiv);
   main.appendChild(form);
 }
 
@@ -182,11 +198,11 @@ function submitForm(event) {
   event.preventDefault();
 
   // Get user data from session storage
-  const userData = JSON.parse(sessionStorage.getItem('userData'));
+  const userData = JSON.parse(sessionStorage.getItem("userData"));
   if (!userData || !userData.id) {
-    console.error('No user logged in');
-    alert('Please log in to create a recipe');
-    window.location.href = '/index';
+    console.error("No user logged in");
+    alert("Please log in to create a recipe");
+    window.location.href = "/index";
     return;
   }
 
@@ -194,12 +210,13 @@ function submitForm(event) {
     dish: "",
     ingredients: [],
     instructions: [],
-    user_id: userData.id  // Add user_id to the recipe data
+    user_id: userData.id, // Add user_id to the recipe data
+    allergen: "",
   };
 
   var dishInput = document.querySelector(".dishForm input[name='dish']");
   if (!dishInput.value.trim()) {
-    alert('Please enter a dish name');
+    alert("Please enter a dish name");
     return;
   }
   recipeData.dish = dishInput.value;
@@ -207,7 +224,7 @@ function submitForm(event) {
   // Collect ingredients
   var ingredientForms = document.querySelectorAll(".ingredientForm");
   if (ingredientForms.length === 0) {
-    alert('Please add at least one ingredient');
+    alert("Please add at least one ingredient");
     return;
   }
   ingredientForms.forEach((form) => {
@@ -215,57 +232,60 @@ function submitForm(event) {
     var measure = form.querySelector("input[name='measure']").value;
     var ingredient = form.querySelector("input[name='ingredient']").value;
     if (!size || !measure || !ingredient) {
-      alert('Please fill in all ingredient fields');
+      alert("Please fill in all ingredient fields");
       return;
     }
-    recipeData.ingredients.push({ 
-      size: parseFloat(size), 
-      measure: measure.trim(), 
-      ingredient: ingredient.trim() 
+    recipeData.ingredients.push({
+      size: parseFloat(size),
+      measure: measure.trim(),
+      ingredient: ingredient.trim(),
     });
   });
 
   // Collect instructions
   var instructionForms = document.querySelectorAll(".instructionForm");
   if (instructionForms.length === 0) {
-    alert('Please add at least one instruction step');
+    alert("Please add at least one instruction step");
     return;
   }
   instructionForms.forEach((form) => {
     var step = form.querySelector("input[name='step']").value;
     if (!step.trim()) {
-      alert('Please fill in all instruction steps');
+      alert("Please fill in all instruction steps");
       return;
     }
     recipeData.instructions.push(step.trim());
   });
+
+  var allergenInput = document.querySelector("#allergen");
+  recipeData.allergen = allergenInput.checked ? 1 : 0;
 
   // Send the recipe data to the server
   fetch("/submitRecipe", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "User-Id": userData.id  // Add user ID to headers as well
+      "User-Id": userData.id, // Add user ID to headers as well
     },
     body: JSON.stringify(recipeData),
   })
-  .then(response => {
-    if (!response.ok) {
-      return response.json().then(data => {
-        throw new Error(data.message || 'Failed to save recipe');
-      });
-    }
-    return response.json();
-  })
-  .then(data => {
-    console.log("Recipe saved successfully:", data);
-    alert('Recipe saved successfully!');
-    window.location.href = "/recipeDisplay";
-  })
-  .catch(error => {
-    console.error("Error saving recipe:", error);
-    alert('Error saving recipe: ' + error.message);
-  });
+    .then((response) => {
+      if (!response.ok) {
+        return response.json().then((data) => {
+          throw new Error(data.message || "Failed to save recipe");
+        });
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log("Recipe saved successfully:", data);
+      alert("Recipe saved successfully!");
+      window.location.href = "/recipeDisplay";
+    })
+    .catch((error) => {
+      console.error("Error saving recipe:", error);
+      alert("Error saving recipe: " + error.message);
+    });
 }
 
 document.addEventListener("keydown", function (event) {
@@ -364,7 +384,7 @@ document.addEventListener("DOMContentLoaded", function () {
   createDishForm();
   populateHeading("Ingredients", "section");
   createIngredientForm();
-  populateHeading("Instructions", "div");
+  populateHeading("Instructions", ".instructionDiv");
   createInstructionsForm();
   createNav();
 });

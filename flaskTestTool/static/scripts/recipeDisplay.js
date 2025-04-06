@@ -150,6 +150,14 @@ function addRecipe(recipe) {
   recipeText.classList.add("recipeSpan");
   recipeText.textContent = recipe.dish || "Unnamed Recipe";
   recipeDiv.appendChild(recipeText);
+  var allergenSpan = document.createElement("span");
+  allergenSpan.classList.add("allergen");
+  if (recipe.allergen === 1) {
+    allergenSpan.textContent = "Contains Allergen";
+  } else {
+    allergenSpan.textContent = "";
+  }
+  recipeDiv.appendChild(allergenSpan);
   if (recipe.ingredients && recipe.ingredients.length > 0) {
     var ingredientList = document.createElement("ul");
     ingredientList.classList.add("ingredientList");

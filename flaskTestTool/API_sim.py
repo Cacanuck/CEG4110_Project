@@ -204,7 +204,8 @@ def submit_recipe():
         # Create new recipe with user_id
         new_recipe = Recipe(
             dish=recipe_data['dish'],
-            user_id=user_id
+            user_id=user_id,
+            allergen=recipe_data['allergen']
         )
         
         db.session.add(new_recipe)
@@ -238,6 +239,7 @@ def submit_recipe():
                 'recipe_id': new_recipe.id,
                 'recipe': {
                     'dish': new_recipe.dish,
+                    'allergen': new_recipe.allergen,
                     'ingredients': recipe_data['ingredients'],
                     'instructions': instructions}
             }), 201
@@ -335,6 +337,7 @@ def update_recipe(recipe_id):
             return jsonify({'message': 'Recipe not found'}), 404
         
         recipe.dish = recipe_data.get('dish', recipe.dish)
+        recipe.allergen = recipe_data.get('allergen', recipe.allergen)
         Ingredient.query.filter_by(recipe_id=recipe.id).delete()
         Instruction.query.filter_by(recipe_id=recipe.id).delete()
         
@@ -364,6 +367,7 @@ def update_recipe(recipe_id):
                 'recipe_id': recipe.id,
                 'recipe': {
                     'dish': recipe.dish,
+                    'allergen': recipe.allergen,
                     'ingredients': recipe_data['ingredients'],
                     'instructions': recipe_data['instructions']}
             }), 201

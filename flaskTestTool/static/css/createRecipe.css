@@ -105,7 +105,9 @@ input {
   width: 80%;
 }
 .Dish {
+  display: inline-block;
   width: 10%;
+  margin-bottom: 20px;
 }
 section,
 main {
@@ -219,4 +221,21 @@ main form {
   text-align: center;
   justify-content: center;
   margin-left: 10px;
+}
+.allergen {
+  display: block;
+  margin-top: 10px;
+}
+.allergen label {
+  display: block;
+  margin-bottom: 5px;
+}
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+}
+.allergenText {
+  margin-top: 5px;
+  font-size: 8pt;
 }

@@ -16,6 +16,22 @@ function createDishForm() {
   dishInput.setAttribute("name", "dish");
   dishInput.classList.add("Dish", "input");
   form.appendChild(dishInput);
+  var allergenDiv = document.createElement("div");
+  allergenDiv.classList.add("allergenDiv");
+  var allergenLabel = document.createElement("label");
+  allergenLabel.textContent = "Contains Allergens: ";
+  allergenDiv.appendChild(allergenLabel);
+  var allergenInput = document.createElement("input");
+  allergenInput.setAttribute("type", "checkbox");
+  allergenInput.setAttribute("name", "allergen");
+  allergenInput.setAttribute("id", "allergen");
+  var allergenText = document.createElement("p");
+  allergenText.classList.add("allergenText");
+  allergenText.textContent =
+    "Known Allergens include: Milk, Eggs, Fish, Shellfish, Tree nuts, Peanuts, Wheat, Soybeans, and Sesame.";
+  allergenDiv.appendChild(allergenInput);
+  allergenDiv.appendChild(allergenText);
+  form.appendChild(allergenDiv);
   main.appendChild(form);
 }
 
@@ -203,6 +219,7 @@ function submitForm(event) {
     ingredients: [],
     instructions: [],
     user_id: userData.id, // Add user_id to the recipe data
+    allergen: "",
   };
 
   var dishInput = document.querySelector(".dishForm input[name='dish']");
@@ -247,6 +264,9 @@ function submitForm(event) {
     }
     recipeData.instructions.push(step.trim());
   });
+
+  var allergenInput = document.querySelector("#allergen");
+  recipeData.allergen = allergenInput.checked ? 1 : 0;
 
   // Send the recipe data to the server
   fetch(`/updateRecipe/${recipeId}`, {
@@ -326,6 +346,13 @@ async function loadRecipe() {
       let stepInput = createInstructionsForm();
       stepInput.value = stepText;
     });
+
+    const allergenInput = document.querySelector("input[name='allergen']");
+    if (recipeData.allergen === 1) {
+      allergenInput.checked = true;
+    } else {
+      allergenInput.checked = false;
+    }
   } catch (error) {
     console.error("Error loading recipe", error);
     alert("Could not load recipe");
@@ -427,7 +454,7 @@ document.addEventListener("DOMContentLoaded", function () {
   populateHeading("Name of Dish", "main");
   createDishForm();
   populateHeading("Ingredients", "section");
-  populateHeading("Instructions", "div");
+  populateHeading("Instructions", ".instructionDiv");
   loadRecipe();
   createNav();
 });
