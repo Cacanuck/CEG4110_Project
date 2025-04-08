@@ -153,7 +153,6 @@ function scaleRecipeButton(recipeId) {
 }
 
 function createConversionRecipeButton() {
-  //                                   TODO
   var button = document.createElement("button");
   button.textContent = "Convert to Metric";
   button.classList.add("convertButton", "imperial");

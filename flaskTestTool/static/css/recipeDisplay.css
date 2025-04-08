@@ -178,8 +178,13 @@ ul {
   position: absolute;
   background-color: transparent;
 }
-.open .expansionButton{
-  transform: rotate(180deg);
+.expansionButton.collapsed {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
+.expansionButton.open {
+  transform: rotate(225deg);
+  -webkit-transform: rotate(225deg);
 }
 .expansionContent {
   overflow: hidden;
