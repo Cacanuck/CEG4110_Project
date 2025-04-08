@@ -80,8 +80,6 @@ body {
 }
 form {
   padding-bottom: 5px;
-  text-align: center;
-  align-items: center;
 }
 label {
   padding-right: 5px;
@@ -91,6 +89,7 @@ input {
   height: 25px;
   border: 0.5px solid gray;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 5px;
 }
 .Amount {
   width: 30px;
@@ -113,22 +112,16 @@ section,
 main {
   display: flex;
   flex-direction: column;
-  padding-top: 50px;
+  padding-top: 10px;
   width: 90%;
 }
 section {
-  padding-bottom: 50px;
+  padding-bottom: 10px;
 }
-h2 {
+h3 {
   font-size: 2em;
   margin-left: 50px;
   margin-bottom: 20px;
-}
-main h2 {
-  text-align: center;
-}
-main form {
-  justify-content: center;
 }
 .instructionDiv {
   width: 90%;
@@ -238,4 +231,5 @@ input[type="checkbox"] {
 .allergenText {
   margin-top: 5px;
   font-size: 8pt;
+  padding-left: 50px;
 }

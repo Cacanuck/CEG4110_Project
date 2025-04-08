@@ -265,6 +265,22 @@ def get_recipes():
     except Exception as e:
         print(f"Error fetching recipes: {str(e)}")
         return jsonify({'message': 'Error fetching recipes'}), 500
+    
+@apiSim.route('/getRecipe/<int:recipe_id>', methods=['GET'])
+def get_recipe(recipe_id):
+    try:
+        user_id = request.headers.get('User-Id')
+        if not user_id:
+            return jsonify({'message': 'user ID is required'}), 401
+        
+        recipe = db.session.get(Recipe, recipe_id)
+        if not recipe:
+            return jsonify({"message": "Recipe not found"}), 404
+        
+        return jsonify(recipe.to_json())
+    except Exception as e:
+        print(f"Error fetching recipe: {str(e)}")
+        return jsonify({'message': 'Error fetching recipe'}), 500
 
 @apiSim.route('/editRecipe')
 def edit_recipe_page():

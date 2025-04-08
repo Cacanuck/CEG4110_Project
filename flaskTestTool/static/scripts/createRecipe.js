@@ -368,7 +368,7 @@ function createNav() {
 }
 
 function createHeading(text) {
-  var heading = document.createElement("h2");
+  var heading = document.createElement("h3");
   heading.textContent = text;
   return heading;
 }

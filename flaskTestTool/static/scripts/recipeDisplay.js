@@ -8,7 +8,7 @@ async function loadRecipes() {
     });
 
     if (!response.ok) {
-      throw new Error(`Error: Failed to fetch recipes}`);
+      throw new Error(`Error: Failed to fetch recipes`);
     }
 
     const recipes = await response.json();
@@ -142,6 +142,159 @@ function deleteRecipeButton(recipeId) {
   return button;
 }
 
+function scaleRecipeButton(recipeId) {
+  var button = document.createElement("button");
+  button.textContent = "Scale";
+  button.classList.add("scaleButton");
+  button.addEventListener("click", async function () {
+    scaleModal(recipeId);
+  });
+  return button;
+}
+
+function createConversionRecipeButton() {
+  //                                   TODO
+  var button = document.createElement("button");
+  button.textContent = "Convert to Metric";
+  button.classList.add("convertButton", "imperial");
+  var main = document.querySelector("main");
+  main.appendChild(button);
+  button.addEventListener("click", async function () {
+    button.classList.toggle("metric");
+    if (button.classList.contains("metric")) {
+      button.textContent = "Convert to Imperial";
+      button.classList.remove("imperial");
+      button.classList.add("metric");
+    } else {
+      button.textContent = "Convert to Metric";
+      button.classList.remove("metric");
+      button.classList.add("imperial");
+    }
+  });
+  return button;
+}
+
+async function scaleModal(recipeId) {
+  var existingModal = document.querySelector(".modal");
+  if (existingModal) {
+    existingModal.remove();
+  }
+  var modal = document.createElement("div");
+  modal.classList.add("modal");
+  var overlay = document.createElement("div");
+  overlay.classList.add("overlay");
+  overlay.addEventListener("click", function () {
+    modal.remove();
+    overlay.remove();
+  });
+  var modalHeader = document.createElement("h2");
+  modalHeader.classList.add("modalHeader");
+  var title = document.createElement("div");
+  title.classList.add("title");
+  title.textContent = "Scale Recipe";
+  var modalBody = document.createElement("div");
+  modalBody.classList.add("modalBody");
+  var closeButton = document.createElement("button");
+  closeButton.classList.add("closeModalButton");
+  closeButton.innerHTML = "&times";
+  closeButton.addEventListener("click", function () {
+    modal.remove();
+    overlay.remove();
+  });
+  modalHeader.appendChild(title);
+  modalHeader.appendChild(closeButton);
+  var label = document.createElement("label");
+  label.classList.add("modalLabel");
+  label.setAttribute("for", "scaleFactor");
+  label.textContent = "Enter scale factor:";
+  label.classList.add("scaleLabel");
+  var input = document.createElement("input");
+  input.classList.add("modalInput");
+  input.type = "number";
+  input.id = "scaleFactor";
+  input.min = "0.5";
+  input.step = "0.5";
+  input.value = "1";
+  var applyButton = document.createElement("button");
+  applyButton.classList.add("applyButton");
+  applyButton.textContent = "Apply Scale";
+  try {
+    const userData = JSON.parse(sessionStorage.getItem("userData"));
+    const response = await fetch(`/getRecipe/${recipeId}`, {
+      headers: {
+        "User-Id": userData.id,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: Failed to fetch recipes}`);
+    }
+
+    const recipe = await response.json();
+
+    const ingredientList = document.createElement("ul");
+    ingredientList.classList.add("modalIngredientList");
+
+    recipe.ingredients.forEach((ingredient) => {
+      const li = document.createElement("li");
+      li.textContent = `${ingredient.size} ${ingredient.measure} ${ingredient.ingredient}`;
+      ingredientList.appendChild(li);
+    });
+
+    const instructionsList = document.createElement("div");
+    instructionsList.classList.add("modalInstructionsList");
+
+    if (Array.isArray(recipe.instructions)) {
+      let stepNum = 1;
+      recipe.instructions.forEach((step) => {
+        const stepP = document.createElement("p");
+        stepP.textContent = `${stepNum++}) ${step.instruction}`;
+        instructionsList.appendChild(stepP);
+      });
+    } else {
+      const noInstructions = document.createElement("p");
+      noInstructions.textContent = "No Instructions Listed";
+      instructionsList.appendChild(noInstructions);
+    }
+    applyButton.addEventListener("click", function () {
+      var factor = parseFloat(input.value);
+      if (isNaN(factor) || factor <= 0.5) {
+        alert("Enter a valid scale factor.");
+        return;
+      }
+      var listItems = ingredientList.querySelectorAll("li");
+      listItems.forEach((li, index) => {
+        var original = recipe.ingredients[index];
+        var newSize = parseFloat(original.size) * factor;
+        newSize = newSize % 1 === 0 ? newSize.toFixed(0) : newSize.toFixed(2);
+        li.textContent = `${newSize} ${original.measure} ${original.ingredient}`;
+      });
+    });
+    modalBody.appendChild(label);
+    modalBody.appendChild(input);
+    modalBody.appendChild(applyButton);
+    var ingredientsHeader = document.createElement("h3");
+    ingredientsHeader.textContent = "Ingredients:";
+    ingredientsHeader.classList.add("ingredientModalHeader");
+    var instructionsHeader = document.createElement("h3");
+    instructionsHeader.textContent = "Instructions:";
+    instructionsHeader.classList.add("instructionModalHeader");
+    modalBody.appendChild(ingredientsHeader);
+    modalBody.appendChild(ingredientList);
+    modalBody.appendChild(instructionsHeader);
+    modalBody.appendChild(instructionsList);
+  } catch (error) {
+    console.error("Error loading recipe for scaling:", error);
+    const errorText = document.createElement("p");
+    errorText.textContent = "Failed to load recipe data.";
+    modalBody.appendChild(errorText);
+  }
+  modal.appendChild(modalHeader);
+  modal.appendChild(modalBody);
+  document.body.appendChild(overlay);
+  document.body.appendChild(modal);
+}
+
 function addRecipe(recipe) {
   var recipeDiv = document.createElement("div");
   recipeDiv.classList.add("recipe");
@@ -179,8 +332,10 @@ function addRecipe(recipe) {
   recipeDiv.appendChild(expansionPanel);
   var buttonContainer = document.createElement("div");
   buttonContainer.classList.add("button-container");
+  var scaleButton = scaleRecipeButton(recipe.id);
   var editButton = editRecipeButton(recipe.id);
   var deleteButton = deleteRecipeButton(recipe.id);
+  buttonContainer.appendChild(scaleButton);
   buttonContainer.appendChild(editButton);
   buttonContainer.appendChild(deleteButton);
   recipeDiv.appendChild(buttonContainer);
@@ -227,6 +382,7 @@ function createExpansionPanel(instructions) {
   }
   button.addEventListener("click", function () {
     expansionContent.classList.toggle("open");
+    button.classList.toggle("open");
     if (expansionContent.classList.contains("open")) {
       expansionContent.style.maxHeight = expansionContent.scrollHeight + "px";
       span.textContent = "Click to Hide";
@@ -241,6 +397,7 @@ function createExpansionPanel(instructions) {
   });
   span.addEventListener("click", function () {
     expansionContent.classList.toggle("open");
+    button.classList.toggle("open");
     if (expansionContent.classList.contains("open")) {
       expansionContent.style.maxHeight = expansionContent.scrollHeight + "px";
       span.textContent = "Click to Hide";
@@ -273,6 +430,7 @@ document.addEventListener("DOMContentLoaded", () => {
   createDiv();
   createNav();
   createHeading();
+  createConversionRecipeButton();
   createExpansionPanel();
   createRecipeButton();
   loadRecipes();
