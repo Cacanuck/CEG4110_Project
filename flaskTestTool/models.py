@@ -26,7 +26,7 @@ class Ingredient(db.Model):
     
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id', ondelete='CASCADE'), nullable=False)
-    size = db.Column(db.Integer, nullable=False)
+    size = db.Column(db.String(10), nullable=False)
     measure = db.Column(db.String, nullable=False)
     ingredient = db.Column(db.String(100), nullable=False)
     

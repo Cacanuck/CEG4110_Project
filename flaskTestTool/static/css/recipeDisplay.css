@@ -239,6 +239,8 @@ ul {
 }
 .modalBody {
   padding: 10px 15px;
+  max-height: 70vh;
+  overflow-y: auto;
 }
 .ingredientModalHeader {
   padding-top: 10px;

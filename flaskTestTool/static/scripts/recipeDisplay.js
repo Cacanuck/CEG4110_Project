@@ -264,7 +264,7 @@ async function scaleModal(recipeId) {
       var listItems = ingredientList.querySelectorAll("li");
       listItems.forEach((li, index) => {
         var original = recipe.ingredients[index];
-        var newSize = parseFloat(original.size) * factor;
+        var newSize = eval(original.size) * factor;
         newSize = newSize % 1 === 0 ? newSize.toFixed(0) : newSize.toFixed(2);
         li.textContent = `${newSize} ${original.measure} ${original.ingredient}`;
       });

@@ -244,7 +244,7 @@ function submitForm(event) {
       return;
     }
     recipeData.ingredients.push({
-      size: parseFloat(size),
+      size: size.trim(),
       measure: measure.trim(),
       ingredient: ingredient.trim(),
     });
