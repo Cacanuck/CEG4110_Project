@@ -79,7 +79,7 @@ async function displayUserRecipes() {
     }
 
     userRecipesContainer.innerHTML = userRecipes.map(recipe => `
-      <div class="cart-card" style="background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); overflow: hidden; transition: transform 0.2s ease;">
+      <div class="cart-card" style="background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); overflow: hidden; transition: transform 0.2s ease; margin-bottom: 2rem;">
         <div style="padding: 1.5rem;">
           <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
             <svg class="cart-icon" width="24" height="24" viewBox="0 0 344 404" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -92,6 +92,7 @@ async function displayUserRecipes() {
               <path d="M338.281 10.625V127.344" stroke="#EC9192" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <h2 style="margin: 0; font-size: 1.25rem; color: black;">${recipe.dish}</h2>
+            ${recipe.allergen === 1 ? '<span style="background-color: #ffebee; color: #c62828; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.9rem; margin-left: 1rem;">Contains Allergen</span>' : ''}
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
             <div style="margin: 0;">
