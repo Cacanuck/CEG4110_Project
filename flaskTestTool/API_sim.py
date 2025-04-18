@@ -24,11 +24,6 @@ init_db()
 
 
 #Variables and Structs
-ingredients = ['Carrots', 'Celery', 'Milk']
-ingredientsJson = {
-    "ingredients": ingredients
-}
-
 
 
 #end Variables and Structs
@@ -36,23 +31,71 @@ ingredientsJson = {
 ### Pantry Page backend calls
 @apiSim.post('/pantry/addItem')
 def addItem():
-    newItem = request.get_json()
-    print(newItem)
-    ingredients.append(newItem['ingredient'])
-    print(ingredients)
-    return ingredientsJson
+    try:
+        data = request.get_json()
+        print(data)
+        dataIngredient = data.get('ingredient')
+        newIngredient = Ingredient(recipe_id=-1,
+                                 size=dataIngredient.get("amount"),
+                                 measure=dataIngredient.get("unit"),
+                                 category=dataIngredient.get("category"),
+                                 ingredient=dataIngredient.get("name")
+                                )
+        print(dataIngredient)
+        print(newIngredient)
+        db.session.add(newIngredient)
+
+        testPrints()
+        
+        user_id = request.headers.get('User-Id')
+        if not user_id:
+            return jsonify({'message': 'User ID is required'}), 401
+            
+        ingredients = Ingredient.query.filter_by(user_id=user_id).all()
+        return ingredients
+        
+    except Exception as e:
+            print(f"Server error: {str(e)}")
+            return jsonify({'message': 'Error processing add ingredient request'}), 500
 
 
-@apiSim.get('/pantry/getItems')
+@apiSim.get('/pantry/getIngredients')
 def getItems():
-    ingredientsJson = {
-        "ingredients": ingredients
-    }
-    return ingredientsJson
+    #Test data
+    ingredientsJson = [{ "name":"Carrots", "amount":"100", "units":"pounds", "cat":"Vegetable", "icon":"https://cdn-icons-png.flaticon.com/512/2910/2910766.png"},
+                       { "name":"Apples", "amount":"50", "units":"kilograms", "cat":"Fruit", "icon":"https://cdn-icons-png.flaticon.com/512/2910/2910766.png"}]
+    #End test data
+    return jsonify(ingredientsJson)
 
 @apiSim.route('/pantry/deleteItem', methods=['POST, GET'])
 def deleteItem():
     return 'deletedItem'
+
+
+### TEST CODE FOR DEBUGGING
+def testPrints():
+    print("Test prints")
+    try:
+        user_id = request.headers.get('User-Id')
+        if not user_id:
+            print("No user id error")
+            return jsonify({'message': 'User ID is required'}), 401
+            
+        ingredients = Ingredient.query.filter_by(user_id=user_id).all()
+        print("Stuff to print:")
+        for stuff in ingredients:
+            print(stuff)
+        
+        print("End test prints")
+
+    except Exception as e:
+        print(f"Error fetching ingredients in TestPrints {str(e)}")
+        return jsonify({'message': 'Error fetching ingredients'}), 500
+### TEST CODE FOR DEBUGGING
+
+
+
+
 ### End Pantry Calls
 
 @apiSim.route('/')

@@ -120,27 +120,46 @@
     <main>
       <div class="container">
         <h1>Pantry</h1>
-        <form>
-          <!--Ingredients form for server-->
-          <label for="stringInput">Enter an Ingredient:</label>
-          <input
-            type="text"
-            id="inputIngredient"
-            placeholder="Ingredient Here"
-          />
 
-          <button class="btn" type="button" onclick="addToPantry()">
-            Add to Pantry
-          </button>
-          <!--TODO: This button will have to send a push to the api to add to a database on the backend.-->
-        </form>
-        <!--Output list of ingredients area-->
-        <ul class="output" id="outputPantry">
-          <!-- Display list of ingredients here -->
-          <li>Carrot</li>
-          <!--TODO: add styling for the list items-->
-        </ul>
+        <div class="inputPantry">
+          <!-- First dropdown menu -->
+          <select name="foodCategory" id="foodCategory">
+              <option value="fruits">Fruits</option>
+              <option value="vegetables">Vegetables</option>
+              <option value="dairy">Dairy</option>
+              <option value="dry_goods">Dry Goods</option>
+              <option value="canned_goods">Canned Goods</option>
+              <option value="meat">Meat</option>
+              <option value="oil">Oil</option>
+          </select>
+  
+          <!-- Name field -->
+          <input type="text" id="name" placeholder="Ingredient" />
+  
+          <!-- Amount field -->
+          <input type="number" id="amount" placeholder="Amount" />
+  
+          <!-- Second dropdown menu -->
+          <select name="units" id="units">
+              <option value="kg">Kilograms</option>
+              <option value="oz">Ounces</option>
+              <option value="liters">Liters</option>
+              <option value="grams">Grams</option>
+          </select>
+  
+          <!-- Add to Pantry button -->
+          <button id="btn" onclick="addToPantry()">Add to Pantry</button>
       </div>
+
+      <div class="top-div"></div>
+
+      <div class="icon-area" id="iconArea">
+      <!-- Icons will be dynamically inserted here -->
+      </div>
+
+      <div class="bottom-div"></div>
+      
+
     </main>
 
     <script>
@@ -153,41 +172,21 @@
           return;
         }
         
-        // If logged in, initialize pantry functionality
-        initListPantry();
+        // If logged in, initialize pantry functionality    
       });
-      function initListPantry() {
-        //setting up js variables
-        const outputArea = document.getElementById("outputPantry");
-        //const selectedPantry = document.getElementById('dropDown').value;  //will need later to pick out specific pantries (i.e. dry goods, all, veg, fruit, canned)
 
-        //TODO: get pantryList from API
-        // then vvv
-        try {
-          const response = fetch("http://127.0.0.1:5000/pantry/getItems");
-          if (response.ok) {
-            const data = response.json();
-            pantryList = data.ingredient;
-            console.log(data);
-          } else {
-            throw new Error("Failed to fetch data");
-          }
-        } catch (error) {
-          console.error("Error:", error);
-        }
-
-        if (pantryList == []) {
-          outputArea.innerHTML = "No ingredients in Pantry yet";
-        }
-      }
+      window.onload = fetchIngredients(); //TODO: fix this glitch
+      
       async function addToPantry() {
         //TODO: displayPantry will have to pull from the backend ingredient list and update after the 'addToPantry' button is pushed
 
-        const inputField = document.getElementById("inputIngredient");
-        const outputList = document.getElementById("outputPantry");
+        foodCat = document.getElementById("foodCategory").value;
+        ingredientName = document.getElementById("name").value;
+        ingredientAmount = document.getElementById("amount").value;
+        ingredientUnit = document.getElementById("units").value;
         const heads = new Headers();
         json = {
-          ingredient: inputField.value,
+          ingredient: {"category": foodCat, "name": ingredientName, "amount": ingredientAmount, "unit": ingredientUnit}
         };
         heads.append("Content-Type", "application/json");
 
@@ -196,20 +195,38 @@
           body: JSON.stringify(json),
           headers: heads,
         });
+        fetchIngredients();
+        //displayIcons(response);
 
-        /* pantryList = []
-            if (pantryList == []) {
-                outputList.innerHTML = 'No ingredients in Pantry';
-            }
-
-            const enteredText = inputField.value;
-            if (enteredText) {
-                
-            } else {
-                outputList.innerHTML = 'No ingredients in Pantry';
-            }
-            */
+      async function fetchIngredients() {
+      try {
+        const response = await fetch('http://127.0.0.1:5000/pantry/getIngredients'); 
+        const data = await response.json();
+        displayIcons(data);
+      } catch (error) {
+        console.error('Error fetching pantry:', error);
       }
+    }
+
+    function displayIcons(icons) {
+      const iconArea = document.getElementById('iconArea');
+      iconArea.innerHTML = ''; // Clear previous icons
+
+      icons.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'icon-card';
+
+        card.innerHTML = `
+          <img class="icon-img" src="${item.icon}" alt="${item.name} icon">
+          <div class="info"><strong>${item.name}</strong></div>
+          <div class="info">${item.amount} ${item.units}</div>
+          <div class="info">${item.cat}</div>
+        `;
+
+        iconArea.appendChild(card);
+      });
+    }
+    }
     </script>
   </body>
 </html>

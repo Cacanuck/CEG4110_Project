@@ -25,10 +25,11 @@ class Ingredient(db.Model):
     __tablename__ = 'ingredient'
     
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id', ondelete='CASCADE'), nullable=False)
+    recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'), nullable=False)
     size = db.Column(db.String(10), nullable=False)
-    measure = db.Column(db.String, nullable=False)
+    measure = db.Column(db.String(50), nullable=False)
     ingredient = db.Column(db.String(100), nullable=False)
+    category = db.Column(db.String(100), nullable=True)
     
     recipe = db.relationship('Recipe', back_populates='ingredients')
     
@@ -38,6 +39,7 @@ class Ingredient(db.Model):
             "size": self.size,
             "measure": self.measure,
             "ingredient": self.ingredient,
+
         }
         
 class Instruction(db.Model):
