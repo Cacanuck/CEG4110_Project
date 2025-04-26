@@ -1,3 +1,5 @@
+var currentUnits = "imperial";
+
 async function loadRecipes() {
   try {
     const userData = JSON.parse(sessionStorage.getItem("userData"));
@@ -152,22 +154,131 @@ function scaleRecipeButton(recipeId) {
   return button;
 }
 
+function convertRecipes(isMetric) {
+  const ingredientItems = document.querySelectorAll(".ingredientList li");
+  ingredientItems.forEach((item) => {
+    const text = item.textContent.trim();
+    const parts = text.match(/^([\d\s/\.]+)\s+(\w+)\s+(.+)$/);
+    if (!parts) {
+      return;
+    }
+    var [, size, measure, ingredient] = parts;
+    const originalSize = parseFloat(eval(size));
+    const converted = convertsUnits(
+      originalSize,
+      measure.toLowerCase(),
+      isMetric
+    );
+    if (converted) {
+      const { newSize, newMeasure } = converted;
+      item.textContent = `${newSize} ${newMeasure} ${ingredient}`;
+    }
+  });
+}
+
+function convertsUnits(size, measure, isMetric) {
+  measure = normalizeMeasure(measure);
+  const imperialToMetric = {
+    ounce: { factor: 28.35, unit: "gram" },
+    pound: { factor: 453.6, unit: "gram" },
+    cup: { factor: 240, unit: "milliliter" },
+    quart: { factor: 946.35, unit: "milliliter" },
+    gallon: { factor: 3785.41, unit: "milliliter" },
+    floz: { factor: 29.57, unit: "milliliter" },
+    teaspoon: { factor: 5, unit: "milliliter" },
+    tablespoon: { factor: 14.17, unit: "gram" },
+    pint: { factor: 473.18, unit: "milliliter" },
+  };
+  const metricToImperial = {
+    liter: { factor: 1 / 3.785, unit: "gallon" },
+    milliliter: { factor: 1 / 240, unit: "cup" },
+    gram: { factor: 1 / 28.35, unit: "ounce" },
+    kilogram: { factor: 1000 / 28.35, unit: "ounce" },
+  };
+  if (isMetric && imperialToMetric[measure]) {
+    const { factor, unit: newMeasure } = imperialToMetric[measure];
+    const newSize = size * factor;
+    return {
+      newSize: newSize.toFixed(1),
+      newMeasure: pluralize(newSize, newMeasure),
+    };
+  } else if (!isMetric && metricToImperial[measure]) {
+    const { factor, unit: newMeasure } = metricToImperial[measure];
+    const newSize = size * factor;
+    return {
+      newSize: newSize.toFixed(1),
+      newMeasure: pluralize(newSize, newMeasure),
+    };
+  }
+  return null;
+}
+
+function normalizeMeasure(measure) {
+  const aliases = {
+    oz: "ounce",
+    ounce: "ounce",
+    ounces: "ounce",
+    lb: "pound",
+    lbs: "pound",
+    pound: "pound",
+    pounds: "pound",
+    tbsp: "tablespoon",
+    tbl: "tablespoon",
+    tbspn: "tablespoon",
+    teaspoon: "teaspoon",
+    tsp: "teaspoon",
+    fl_oz: "floz",
+    fl: "floz",
+    g: "gram",
+    gram: "gram",
+    grams: "gram",
+    kg: "kilogram",
+    mg: "milligram",
+    ml: "milliliter",
+    l: "liter",
+    liter: "liter",
+    litres: "liter",
+    milliliter: "milliliter",
+    milliliters: "milliliter",
+  };
+  return aliases[measure.toLowerCase()] || measure.toLowerCase();
+}
+
+function pluralize(size, measure) {
+  size = parseFloat(size);
+  if (size === 1) {
+    return measure;
+  }
+  if (
+    measure.endsWith("ch") ||
+    measure.endsWith("sh") ||
+    measure.endsWith("s")
+  ) {
+    return measure + "es";
+  }
+  if (measure === "floz") {
+    return "floz";
+  }
+  return measure + "s";
+}
+
 function createConversionRecipeButton() {
   var button = document.createElement("button");
   button.textContent = "Convert to Metric";
-  button.classList.add("convertButton", "imperial");
+  button.classList.add("convertButton");
   var main = document.querySelector("main");
   main.appendChild(button);
   button.addEventListener("click", async function () {
+    var isMetric;
     button.classList.toggle("metric");
     if (button.classList.contains("metric")) {
       button.textContent = "Convert to Imperial";
-      button.classList.remove("imperial");
-      button.classList.add("metric");
+      isMetric = true;
+      convertRecipes(isMetric);
     } else {
       button.textContent = "Convert to Metric";
-      button.classList.remove("metric");
-      button.classList.add("imperial");
+      isMetric = false;
+      convertRecipes(isMetric);
     }
   });
   return button;
