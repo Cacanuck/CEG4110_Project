@@ -171,11 +171,14 @@
           window.location.href = '/index';
           return;
         }
-        
+        else{
+          fetchIngredients()
+        }
+
         // If logged in, initialize pantry functionality    
       });
 
-      window.onload = fetchIngredients(); //TODO: fix this glitch
+      //window.onload = fetchIngredients(); //TODO: fix this glitch
       
       async function addToPantry() {
         //TODO: displayPantry will have to pull from the backend ingredient list and update after the 'addToPantry' button is pushed
@@ -184,25 +187,38 @@
         ingredientName = document.getElementById("name").value;
         ingredientAmount = document.getElementById("amount").value;
         ingredientUnit = document.getElementById("units").value;
-        const heads = new Headers();
+        
         json = {
           ingredient: {"category": foodCat, "name": ingredientName, "amount": ingredientAmount, "unit": ingredientUnit}
-        };
-        heads.append("Content-Type", "application/json");
+          };
 
+        
+        const userData = JSON.parse(sessionStorage.getItem('userData'));
         const response = await fetch("http://127.0.0.1:5000/pantry/addItem", {
           method: "POST",
           body: JSON.stringify(json),
-          headers: heads,
+          headers: {
+                'Content-Type': 'application/json',
+                'User-Id': userData.id
+            }
         });
         fetchIngredients();
         //displayIcons(response);
+      }
 
       async function fetchIngredients() {
       try {
-        const response = await fetch('http://127.0.0.1:5000/pantry/getIngredients'); 
+        const userData = JSON.parse(sessionStorage.getItem('userData'));
+
+        const response = await fetch('http://127.0.0.1:5000/pantry/getIngredients', {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'User-Id': userData.id
+            } 
+      }); 
         const data = await response.json();
-        displayIcons(data);
+        displayIcons(data['ingredients']);
       } catch (error) {
         console.error('Error fetching pantry:', error);
       }
@@ -225,7 +241,6 @@
 
         iconArea.appendChild(card);
       });
-    }
     }
     </script>
   </body>

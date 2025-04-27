@@ -29,7 +29,7 @@ class Ingredient(db.Model):
     size = db.Column(db.String(10), nullable=False)
     measure = db.Column(db.String(50), nullable=False)
     ingredient = db.Column(db.String(100), nullable=False)
-    category = db.Column(db.String(100), nullable=True)
+    
     
     recipe = db.relationship('Recipe', back_populates='ingredients')
     
@@ -75,20 +75,25 @@ class newUser(db.Model):
             "password": self.password
         }
     
-class pantry(db.Model):
+class Pantry(db.Model):
     __tablename__= 'pantry'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, nullable=False)
     name = db.Column(db.String(100), nullable=False)
-    amount = db.Column(db.Integer, nullable=False)
+    amount = db.Column(db.String(50), nullable=False)
     units = db.Column(db.String(50), nullable=False)
+    category = db.Column(db.String(100), nullable=False)
+
     
     def to_json(self):
         return {
             "id": self.id,
+            "user_id":self.user_id,
             "name": self.name,
             "amount": self.amount,
-            "units": self.units
+            "units": self.units,
+            "category":self.category
         }
 
 class ShoppingCart(db.Model):

@@ -1,7 +1,7 @@
 from flask import *
 from flask_cors import CORS
 from config import db
-from models import Recipe, newUser, Ingredient, Instruction, ShoppingCart, CartItem
+from models import Recipe, newUser, Ingredient, Instruction, ShoppingCart, CartItem, Pantry
 import hashlib
 import sqlite3
 
@@ -31,28 +31,36 @@ init_db()
 ### Pantry Page backend calls
 @apiSim.post('/pantry/addItem')
 def addItem():
+    
     try:
         data = request.get_json()
-        print(data)
-        dataIngredient = data.get('ingredient')
-        newIngredient = Ingredient(recipe_id=-1,
-                                 size=dataIngredient.get("amount"),
-                                 measure=dataIngredient.get("unit"),
-                                 category=dataIngredient.get("category"),
-                                 ingredient=dataIngredient.get("name")
-                                )
-        print(dataIngredient)
-        print(newIngredient)
-        db.session.add(newIngredient)
-
-        testPrints()
-        
         user_id = request.headers.get('User-Id')
         if not user_id:
             return jsonify({'message': 'User ID is required'}), 401
+        
+        print(data)
+        dataIngredient = data.get('ingredient')
+        newIngredient = Pantry(user_id = user_id,
+                                 amount=dataIngredient.get("amount"),
+                                 units=dataIngredient.get("unit"),
+                                 category=dataIngredient.get("category"),
+                                 name=dataIngredient.get("name")
+                                )
+        
+        print(dataIngredient)
+        print(newIngredient)
+        db.session.add(newIngredient)
+        db.session.commit()
+
             
-        ingredients = Ingredient.query.filter_by(user_id=user_id).all()
-        return ingredients
+        testPrints(user_id)
+
+        pantry = Pantry.query.filter_by(user_id=user_id).all()
+        ingredients = {'name':"", 'amount':"", 'units':"", 'category':""}
+        for entry in pantry:
+            print(entry.to_json())
+
+        return jsonify({'message':"Added item"})
         
     except Exception as e:
             print(f"Server error: {str(e)}")
@@ -61,11 +69,55 @@ def addItem():
 
 @apiSim.get('/pantry/getIngredients')
 def getItems():
+    try:
+        user_id = request.headers.get('User-Id')
+        if not user_id:
+            return jsonify({'message': 'User ID is required'}), 401
+        #Non-Test Data
+        ingredients = Pantry.query.filter_by(user_id=user_id).all()
+       
+        ingredientList = {'ingredients':[]}
+        for ingredientP in ingredients:
+            ingredient = ingredientP.to_json()
+            ingredientsJson ={'name': ingredient.get('name'),
+                            'amount':ingredient.get('amount'),
+                            'units':ingredient.get('units'),
+                            'category':ingredient.get('category'),
+                            'icon':""}
+
+            if ingredient.get('category') == "fruits":
+                ingredientsJson['icon'] = "images/fruit.svg"
+            elif ingredient.get('category') == "vegetables":
+                ingredientsJson['icon'] = "images/vegetable.svg"
+            elif ingredient.get('category') == "oil":
+                ingredientsJson['icon'] = "images/oil.svg"
+            elif ingredient.get('category') == "meat":
+                ingredientsJson['icon'] = "images/meat.svg"
+            elif ingredient.get('category') == "dairy":
+                ingredientsJson['icon'] = "images/dairy.svg"
+            elif ingredient.get('category') == "dry_goods":
+                ingredientsJson['icon'] = "images/dryGoods.svg"
+            elif ingredient.get('category') == "canned_goods":
+                ingredientsJson['icon'] = "images/cannedGoods.svg"
+            else:
+                ingredientsJson['icon'] = "images/null.svg"
+
+            ingredientList['ingredients'].append(ingredientsJson)
+        print(ingredientList)
+        return jsonify(ingredientList)
+
+    except Exception as e:
+        print(f"Server error: {str(e)}")
+        return jsonify({'message': 'Error processing fetch ingredient request'}), 500
+
+
+    #End Non-Test data
+
     #Test data
-    ingredientsJson = [{ "name":"Carrots", "amount":"100", "units":"pounds", "cat":"Vegetable", "icon":"https://cdn-icons-png.flaticon.com/512/2910/2910766.png"},
-                       { "name":"Apples", "amount":"50", "units":"kilograms", "cat":"Fruit", "icon":"https://cdn-icons-png.flaticon.com/512/2910/2910766.png"}]
+    #ingredientsJson = [{ "name":"Carrots", "amount":"100", "units":"pounds", "cat":"Vegetable", "icon":"https://cdn-icons-png.flaticon.com/512/2910/2910766.png"},
+    #                   { "name":"Apples", "amount":"50", "units":"kilograms", "cat":"Fruit", "icon":"https://cdn-icons-png.flaticon.com/512/2910/2910766.png"}]
     #End test data
-    return jsonify(ingredientsJson)
+   
 
 @apiSim.route('/pantry/deleteItem', methods=['POST, GET'])
 def deleteItem():
@@ -73,18 +125,16 @@ def deleteItem():
 
 
 ### TEST CODE FOR DEBUGGING
-def testPrints():
+def testPrints(user_id):
     print("Test prints")
     try:
-        user_id = request.headers.get('User-Id')
-        if not user_id:
-            print("No user id error")
-            return jsonify({'message': 'User ID is required'}), 401
+        
             
-        ingredients = Ingredient.query.filter_by(user_id=user_id).all()
+        ingredients = Pantry.query.filter_by(user_id=user_id).all()
+        stuff = []
         print("Stuff to print:")
         for stuff in ingredients:
-            print(stuff)
+            print(stuff.to_json())
         
         print("End test prints")
 
