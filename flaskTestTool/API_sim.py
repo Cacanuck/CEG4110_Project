@@ -53,12 +53,12 @@ def addItem():
         db.session.commit()
 
             
-        testPrints(user_id)
+        #testPrints(user_id)
 
         pantry = Pantry.query.filter_by(user_id=user_id).all()
         ingredients = {'name':"", 'amount':"", 'units':"", 'category':""}
-        for entry in pantry:
-            print(entry.to_json())
+        #for entry in pantry:
+            #print(entry.to_json())
 
         return jsonify({'message':"Added item"})
         
@@ -66,6 +66,55 @@ def addItem():
             print(f"Server error: {str(e)}")
             return jsonify({'message': 'Error processing add ingredient request'}), 500
 
+@apiSim.get('/pantry/getByIndex')
+def getByIndex():
+    print('getting item by index')
+    try:
+        user_id = request.headers.get('User-Id')
+        if not user_id:
+            return jsonify({'message': 'User ID is required'}), 401
+        index = request.headers.get('index')
+        index = int(index) +1
+        print(index)
+        item = Pantry.query.filter_by(user_id=user_id, id=index).first()
+        itemJson = item.to_json()
+        print(itemJson)
+        return jsonify(itemJson)
+
+    except Exception as e:
+        print(f"Server error, couldn't get index: {str(e)}")
+        return jsonify({'message': 'Error processing getByIndex request'}), 500
+    
+@apiSim.post('/pantry/editByIndex')
+def editByIndex():
+    try:
+        user_id = request.headers.get('User-Id')
+        if not user_id:
+            return jsonify({'message': 'User ID is required'}), 401
+        changeName = request.headers.get('name')
+        changeAmount = request.headers.get('amount')
+        changeUnits = request.headers.get('units')
+        changeCategory = request.headers.get('category')
+        print(changeName +' '+changeAmount+' '+changeUnits+' '+changeCategory)
+        index = request.headers.get('index')
+        index = int(index) +1
+        print(index)
+        item = Pantry.query.filter_by(user_id=user_id, id=index).first()
+        print(item.to_json())
+        
+        item.name = changeName
+        item.amount = changeAmount
+        item.units = changeUnits
+        item.category = changeCategory
+        db.session.commit()
+
+        return jsonify({'message':"Sucessfully edited item"})
+
+        
+    
+    except Exception as e:
+        print(f"Server error, couldn't get index: {str(e)}")
+        return jsonify({'message': 'Error processing getByIndex request'}), 500
 
 @apiSim.get('/pantry/getIngredients')
 def getItems():
@@ -85,25 +134,10 @@ def getItems():
                             'category':ingredient.get('category'),
                             'icon':""}
 
-            if ingredient.get('category') == "fruits":
-                ingredientsJson['icon'] = "images/fruit.svg"
-            elif ingredient.get('category') == "vegetables":
-                ingredientsJson['icon'] = "images/vegetable.svg"
-            elif ingredient.get('category') == "oil":
-                ingredientsJson['icon'] = "images/oil.svg"
-            elif ingredient.get('category') == "meat":
-                ingredientsJson['icon'] = "images/meat.svg"
-            elif ingredient.get('category') == "dairy":
-                ingredientsJson['icon'] = "images/dairy.svg"
-            elif ingredient.get('category') == "dry_goods":
-                ingredientsJson['icon'] = "images/dryGoods.svg"
-            elif ingredient.get('category') == "canned_goods":
-                ingredientsJson['icon'] = "images/cannedGoods.svg"
-            else:
-                ingredientsJson['icon'] = "images/null.svg"
+            
 
             ingredientList['ingredients'].append(ingredientsJson)
-        print(ingredientList)
+        #print(ingredientList)
         return jsonify(ingredientList)
 
     except Exception as e:
@@ -111,17 +145,40 @@ def getItems():
         return jsonify({'message': 'Error processing fetch ingredient request'}), 500
 
 
-    #End Non-Test data
 
-    #Test data
-    #ingredientsJson = [{ "name":"Carrots", "amount":"100", "units":"pounds", "cat":"Vegetable", "icon":"https://cdn-icons-png.flaticon.com/512/2910/2910766.png"},
-    #                   { "name":"Apples", "amount":"50", "units":"kilograms", "cat":"Fruit", "icon":"https://cdn-icons-png.flaticon.com/512/2910/2910766.png"}]
-    #End test data
-   
 
-@apiSim.route('/pantry/deleteItem', methods=['POST, GET'])
+
+@apiSim.route('/pantry/deleteByIndex', methods=['DELETE'])
 def deleteItem():
-    return 'deletedItem'
+    try:
+        user_id = request.headers.get('User-Id')
+        if not user_id:
+            return jsonify({'message': 'User ID is required'}), 401
+        #changeName = request.headers.get('name')
+        #changeAmount = request.headers.get('amount')
+        #changeUnits = request.headers.get('units')
+        #changeCategory = request.headers.get('category')
+        #print(changeName +' '+changeAmount+' '+changeUnits+' '+changeCategory)
+        index = request.headers.get('index')
+        index = int(index) +1
+        print(index)
+        item = Pantry.query.filter_by(user_id=user_id, id=index).first()
+        print(item.to_json())
+        db.session.delete(item)
+        #item.name = changeName
+        #item.amount = changeAmount
+        #item.units = changeUnits
+        #item.category = changeCategory
+        
+        db.session.commit()
+        
+        return jsonify({'message':"Sucessfully deleted item"})
+
+        
+    
+    except Exception as e:
+        print(f"Server error, couldn't delete: {str(e)}")
+        return jsonify({'message': 'Error processing getByIndex request'}), 500
 
 
 ### TEST CODE FOR DEBUGGING
