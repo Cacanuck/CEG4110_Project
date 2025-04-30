@@ -203,3 +203,7 @@ select, input[type="text"] {
     background-color: #f0f0f0;
     text-align: center;
   }
+  .editModal {
+    background-color: #F5F0F6;
+    border-radius: 4px;
+  }

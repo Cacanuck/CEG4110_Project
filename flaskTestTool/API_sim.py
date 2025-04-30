@@ -74,9 +74,9 @@ def getByIndex():
         if not user_id:
             return jsonify({'message': 'User ID is required'}), 401
         index = request.headers.get('index')
-        index = int(index) +1
+        
         print(index)
-        item = Pantry.query.filter_by(user_id=user_id, id=index).first()
+        item = Pantry.query.filter_by(user_id=user_id, name=index).first()
         itemJson = item.to_json()
         print(itemJson)
         return jsonify(itemJson)
@@ -95,11 +95,11 @@ def editByIndex():
         changeAmount = request.headers.get('amount')
         changeUnits = request.headers.get('units')
         changeCategory = request.headers.get('category')
-        print(changeName +' '+changeAmount+' '+changeUnits+' '+changeCategory)
+        print("To be edited: "+''+changeName +' '+changeAmount+' '+changeUnits+' '+changeCategory)
         index = request.headers.get('index')
-        index = int(index) +1
+        #
         print(index)
-        item = Pantry.query.filter_by(user_id=user_id, id=index).first()
+        item = Pantry.query.filter_by(user_id=user_id, name=index).first()
         print(item.to_json())
         
         item.name = changeName
@@ -160,9 +160,9 @@ def deleteItem():
         #changeCategory = request.headers.get('category')
         #print(changeName +' '+changeAmount+' '+changeUnits+' '+changeCategory)
         index = request.headers.get('index')
-        index = int(index) +1
+        
         print(index)
-        item = Pantry.query.filter_by(user_id=user_id, id=index).first()
+        item = Pantry.query.filter_by(user_id=user_id, name=index).first()
         print(item.to_json())
         db.session.delete(item)
         #item.name = changeName

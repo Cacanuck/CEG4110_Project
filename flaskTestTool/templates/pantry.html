@@ -168,8 +168,8 @@
           <label>Amount: <input id="editAmount" type="number"></label><br>
           <label>Units: <input id="editUnits" type="text"></label><br>
           <label>Category: <input id="editCategory" type="text"></label><br>
-          <button onclick="saveChanges()">Save</button>
-          <button onclick="deleteItem()">Delete</button>
+          <button id="btn" onclick="saveChanges()">Save</button>
+          <button id="btn" onclick="deleteItem()">Delete</button>
         </div>
       </div>
 
@@ -280,11 +280,10 @@
       try {
 
         const itemIndex = [icons];
-        var indexCounter = 0;
         icons.forEach(item => {
-          var thisIndex = indexCounter;
-          console.log(indexCounter);
-          console.log("Item: " + item.name + " and index: "+ thisIndex);
+          var name = item.name;
+          console.log(name);
+          console.log("Item: " + item.name + " and index: "+ name);
           const card = document.createElement('div');
           card.className = 'icon-card';
           if (item.category == 'fruits'){
@@ -351,10 +350,9 @@
             <div class="info">${item.category}</div>
           `;
           }
-          card.addEventListener('click', () => openModal(thisIndex));
-          console.log('opening modal numer'+thisIndex);
+          card.addEventListener('click', () => openModal(name));
+          console.log('opening modal numer'+name);
           iconArea.appendChild(card);
-          indexCounter = indexCounter + 1;
         });
         
       }
